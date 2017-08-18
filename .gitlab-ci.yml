@@ -16,22 +16,21 @@ coredns-build-branch:
         exit 0
       else
         echo "Checking for Latest Build"
-        COREDNS_RELEASE_ENV=$(curl -s -L "$BASE_URL/coredns/coredns/builds/artifacts/${COREDNS_BRANCH}/file/release.env?job=release" | sed -n 's/.*href="\([^"]*\).*/\1/p' | grep artifacts/raw | tail -1)
-      fi
-    - mkdir -p data
-    - >
-      if curl -s -o data/coredns.env -L ${BASE_URL}/$COREDNS_RELEASE_ENV/fake; then
+        COREDNS_RELEASE_ENV=$(curl -s -L "$BASE_URL/coredns/coredns/builds/artifacts/${COREDNS_BRANCH}/file/release.env?job=release")
+        curl -s -o data/coredns.latest -L ${BASE_URL}/$COREDNS_RELEASE_ENV
+        if cat data/coredns.latest | sed -n 's/.*href="\([^"]*\).*/\1/p' | grep artifacts/raw | tail -1 2>&1 | tee data/coredns.env; then
         cat data/coredns.env
-      else
-       PROJECT_PIPELINE=$(curl -X POST
-          -F token=$CORE_DNS_CI_JOB_TOKEN
-          -F ref=${COREDNS_BRANCH}
-          https://gitlab.cncf.ci/api/v4/projects/9/trigger/pipeline | jq '.id')
-       echo 'Wait for Build "FIX ME / HACK"'
-       until [ "$JOB_STATUS" == '"success"' ]; do JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="release") | .status')" ; sleep 0.5 ; done ; echo 'Build Compleate'
-       PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" 'https://gitlab.cncf.ci/api/v4/projects/9/pipelines/${PROJECT_PIPELINE}/jobs?scope=success' | jq '.[] | select(.name=="release") | .id') 
-       curl -s -o data/coredns.env -L "$BASE_URL/coredns/coredns/-/jobs/${PROJECT_JOB}/artifacts/raw/release.env"
-       cat data/coredns.env
+        else
+          PROJECT_PIPELINE=$(curl -X POST
+            -F token=$CORE_DNS_CI_JOB_TOKEN
+            -F ref=${COREDNS_BRANCH}
+            https://gitlab.cncf.ci/api/v4/projects/9/trigger/pipeline | jq '.id')
+          echo 'Wait for Build "FIX ME / HACK"'
+          until [ "$JOB_STATUS" == '"success"' ]; do JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="release") | .status')" ; sleep 0.5 ; done ; echo 'Build Compleate'
+          PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" 'https://gitlab.cncf.ci/api/v4/projects/9/pipelines/${PROJECT_PIPELINE}/jobs?scope=success' | jq '.[] | select(.name=="release") | .id') 
+          curl -s -o data/coredns.env -L "$BASE_URL/coredns/coredns/-/jobs/${PROJECT_JOB}/artifacts/raw/release.env"
+          cat data/coredns.env
+        fi
       fi
   artifacts:
     name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
