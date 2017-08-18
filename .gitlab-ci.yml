@@ -11,7 +11,7 @@ coredns-build-branch:
   stage: coredns-build-branch
   script:
     - echo "$COREDNS_BRANCH"
-    - if [ -z "$COREDNS_BRANCH" ]; then echo "Checking for Latest Build"; else exit; fi;
+    - if [ -z ${COREDNS_BRANCH} ]; then echo "Checking for Latest Build"; else echo "NOT SET"; fi
     - ln -s /builds /go/src/github.com
     - cd /go/src/github.com/coredns/coredns
     - go get github.com/mholt/caddy
