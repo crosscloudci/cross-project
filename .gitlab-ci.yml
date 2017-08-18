@@ -7,9 +7,10 @@ before_script:
   - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
 
 coredns-build-branch:
-  image: golang:1.8.1
+  image: debian:latest
   stage: coredns-build-branch
   script:
+    - apt update && apt install jq
     - echo "$COREDNS_BRANCH"
     - mkdir ./data
     - >
@@ -39,7 +40,7 @@ coredns-build-branch:
     untracked: true
     expire_in: 5 weeks
     paths:
-      - .data/
+      - .data
 
 coredns-deploy:
   stage: coredns-deploy
