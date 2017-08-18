@@ -10,7 +10,7 @@ coredns-build-branch:
   image: debian:latest
   stage: coredns-build-branch
   script:
-    - apt update && apt install jq
+    - apt update && apt -y install jq
     - echo "$COREDNS_BRANCH"
     - mkdir ./data
     - >
