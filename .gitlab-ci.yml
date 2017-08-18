@@ -11,6 +11,7 @@ coredns-build-branch:
   stage: coredns-build-branch
   script:
     - >
+      echo "$COREDNS_BRANCH"
       if [ -z "$COREDNS_BRANCH" ]; then
         echo "Checking for Latest Build"
         mkdir -p data 
