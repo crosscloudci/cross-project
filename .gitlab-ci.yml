@@ -23,6 +23,7 @@ coredns-build-branch:
         cat data/coredns.env
       else
         echo "Trigger Build"
+      fi
     - ln -s /builds /go/src/github.com
     - cd /go/src/github.com/coredns/coredns
     - go get github.com/mholt/caddy
