@@ -19,7 +19,7 @@ coredns-build-branch:
         export COREDNS_RELEASE_ENV=$(curl -s -L "$BASE_URL/coredns/coredns/builds/artifacts/${COREDNS_BRANCH}/file/release.env?job=release" | sed -n 's/.*href="\([^"]*\).*/\1/p' | grep artifacts/raw | tail -1)
       fi
     - >
-      if curl -s -o data/coredns.env -L ${BASE_URL}/$COREDNS_RELEASE_ENV; then
+      if curl -o data/coredns.env -L ${BASE_URL}/$COREDNS_RELEASE_ENV; then
         cat data/coredns.env
       else
         echo "Trigger Build"
