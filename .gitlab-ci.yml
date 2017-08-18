@@ -1,0 +1,43 @@
+stages:
+  - coredns-build-branch
+  - coredns-deploy
+
+before_script:
+  - export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
+  - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
+
+coredns-build-branch:
+  image: golang:1.8.1
+  stage: coredns-build-branch
+  script:
+    - if [ -z "$COREDNS_BRANCH" ];
+    then echo "Checking for Latest Build";
+    COREDNS_RELEASE_ENV=$(curl -s -L
+      "$BASE_URL/coredns/coredns/builds/artifacts/${COREDNS_BRANCH}/file/release.env?job=release"
+      |  sed -n 's/.*href="\([^"]*\).*/\1/p' | grep artifacts/raw | tail -1)
+    mkdir -p data
+    curl -s -o data/coredns.env -L ${BASE_URL}/$COREDNS_RELEASE_ENV
+    cat data/coredns.env;
+    else done; fi
+    - ln -s /builds /go/src/github.com
+    - cd /go/src/github.com/coredns/coredns
+    - go get github.com/mholt/caddy
+    - make -j $(getconf _NPROCESSORS_ONLN)
+        -f Makefile.release build-linux
+  artifacts:
+    name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
+    untracked: true
+    expire_in: 5 weeks
+    paths:
+      - build/
+
+coredns-deploy:
+  stage: coredns-deploy
+  variables:
+    COREDNS_DOCKER_REGISTRY: "${CI_REGISTRY_IMAGE}"
+    COREDNS_DOCKER_IMAGE_TAG: "${CI_COMMIT_REF_SLUG}.job.${CI_JOB_ID}"
+  script:
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+    - docker build -t "$CI_REGISTRY_IMAGE/coredns-e2e:$COREDNS_DOCKER_IMAGE_TAG" ./e2e/
+    - docker push "$CI_REGISTRY_IMAGE/coredns-e2e:$COREDNS_DOCKER_IMAGE_TAG"
+
