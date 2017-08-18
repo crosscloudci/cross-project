@@ -16,7 +16,7 @@ coredns-build-branch:
         exit 0
       else
         echo "Checking for Latest Build"
-        COREDNS_RELEASE_ENV=$(curl -s -L "$BASE_URL/coredns/coredns/builds/artifacts/${COREDNS_BRANCH}/file/release.env?job=release" | sed -n 's/.*href="\([^"]*\).*/\1/p' | grep artifacts/raw | tail -1)
+        export COREDNS_RELEASE_ENV=$(curl -s -L "$BASE_URL/coredns/coredns/builds/artifacts/${COREDNS_BRANCH}/file/release.env?job=release" | sed -n 's/.*href="\([^"]*\).*/\1/p' | grep artifacts/raw | tail -1)
       fi
     - >
       if curl -s -o data/coredns.env -L ${BASE_URL}/$COREDNS_RELEASE_ENV; then
