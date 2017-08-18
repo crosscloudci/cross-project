@@ -24,7 +24,7 @@ coredns-build-branch:
         curl -o data/coredns.env -L ${BASE_URL}/$COREDNS_RELEASE_ENV
         cat data/coredns.env
         else
-          PROJECT_PIPELINE=$(curl -X POST -F token=$CORE_DNS_CI_JOB_TOKEN -F ref=${COREDNS_BRANCH} https://gitlab.cncf.ci/api/v4/projects/9/trigger/pipeline | jq '.id')
+          PROJECT_PIPELINE=$(curl -X POST -F token=$CORE_DNS_CI_JOB_TOKEN -F ref=${COREDNS_BRANCH} -F "variables[BUILD_TRIGGER]=yes" https://gitlab.cncf.ci/api/v4/projects/9/trigger/pipeline | jq '.id')
           echo 'Wait for Build "FIX ME / HACK"'
           until [ "$JOB_STATUS" == '"success"' ]; do JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="release") | .status')" ; sleep 0.5 ; done ; echo 'Build Compleate'
           PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="release") | .id') 
