@@ -20,7 +20,7 @@ coredns-build-branch:
       fi
     - mkdir -p data
     - >
-      if curl -s -o data/coredns.env -L ${BASE_URL}/$COREDNS_RELEASE_ENV; then
+      if curl -s -o data/coredns.envo -L ${BASE_URL}/$COREDNS_RELEASE_ENV; then
         cat data/coredns.env
       else
        PROJECT_PIPELINE=$(curl -X POST
