@@ -14,10 +14,11 @@ coredns-build-branch:
       if [ -z "$COREDNS_BRANCH" ]; then
         echo "Checking for Latest Build"
         mkdir -p data 
-        curl -s -o data/coredns.env -L ${BASE_URL}/$COREDNS_RELEASE_ENV;
-        cat data/coredns.env;
-      else done;
-      fi;
+        curl -s -o data/coredns.env -L ${BASE_URL}/$COREDNS_RELEASE_ENV
+        cat data/coredns.env
+      else
+        done
+      fi
     - ln -s /builds /go/src/github.com
     - cd /go/src/github.com/coredns/coredns
     - go get github.com/mholt/caddy
