@@ -45,6 +45,9 @@ aws-coredns-deploy:
     - >
       if [ -z "$AWS_KUBECONFIG" ]; then
         exit 0 #Should Show Skipped on Gitlab CI FIXME
+      else
+        echo 'deploy'
+      fi
     - cat "${AWS_KUBECONFIG}" | tee ./aws-kubeconfig
     - export KUBECONFIG=./aws-kubeconfig
   artifacts:
@@ -60,6 +63,9 @@ gke-coredns-deploy:
     - >
       if [ -z "$GKE_KUBECONFIG" ]; then
         exit 0 #Should Show Skipped on Gitlab CI FIXME
+      else
+        echo 'deploy'
+      fi
     - cat "${GKE_KUBECONFIG}" | tee ./gke-kubeconfig
     - export KUBECONFIG=./gke-kubeconfig
   artifacts:
@@ -75,6 +81,9 @@ gce-coredns-deploy:
     - >
       if [ -z "$GCE_KUBECONFIG" ]; then
         exit 0 #Should Show Skipped on Gitlab CI FIXME
+      else
+        echo 'deploy'
+      fi 
     - cat "${GCE_KUBECONFIG}" | tee ./gce-kubeconfig
     - export KUBECONFIG=./gce-kubeconfig
   artifacts:
@@ -90,6 +99,9 @@ packet-coredns-deploy:
     - >
       if [ -z "$PACKET_KUBECONFIG" ]; then
         exit 0 #Should Show Skipped on Gitlab CI FIXME
+      else
+        echo 'deploy'
+      fi 
     - cat "${PACKET_KUBECONFIG}" | tee ./packet-kubeconfig
     - export KUBECONFIG=./packet-kubeconfig
   artifacts:
