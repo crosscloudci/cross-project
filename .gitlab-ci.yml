@@ -48,6 +48,7 @@ aws-coredns-deploy:
       else
         echo 'deploy'
       fi
+    - sleep 100000
     - cat "${AWS_KUBECONFIG}" | tee ./aws-kubeconfig
     - export KUBECONFIG=./aws-kubeconfig
   artifacts:
