@@ -55,9 +55,12 @@ coredns-build-commit:
 
         echo "Fetch Full SHA" 
         SHA=$(curl --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/repository/commits/${COREDNS_COMMIT}" | jq --raw-output '.id')
+        echo ${SHA}
 
         echo "Fetch Most Recent Job ID's on Commit"
         COMPILE_JOB=$(curl --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/repository/commits/${SHA}/statuses" | jq '.[] | select(.name=="compile")' | jq -s 'sort_by(.created_at)' | jq '.[0] | .id')
+        echo ${COMPILE_JOB}
+        
         CONTAINER_JOB=$(curl --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/repository/commits/${SHA}/statuses" | jq '.[] | select(.name=="containe r")' | jq -s 'sort_by(.created_at)' | jq '.[0] | .id')
 
         echo "Fetch Artifact"
