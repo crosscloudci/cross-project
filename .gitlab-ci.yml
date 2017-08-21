@@ -64,7 +64,7 @@ coredns-build-commit:
         curl -s -o data/coredns.env -L "$BASE_URL/coredns/coredns/-/jobs/${CONTAINER_JOB}/artifacts/raw/release.env"
 
         echo "Verify Artifact"
-        source ./data/coredns.env
+        . ./data/coredns.env
         if env | grep COREDNS; then
         cat data/coredns.env
         else
