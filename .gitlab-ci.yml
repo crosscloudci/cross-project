@@ -64,7 +64,7 @@ coredns-build-commit:
         CONTAINER_JOB=$(curl --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/repository/commits/${SHA}/statuses" | jq '.[] | select(.name=="container")' | jq -s 'sort_by(.created_at)' | jq '.[0] | .id')
 
         echo "Fetch Artifact"
-        curl -s -o data/coredns.env -L "$BASE_URL/coredns/coredns/-/jobs/${CONTAINER_JOB}/artifacts/raw/release.env"
+        curl -s -o data/coredns.env -L "$BASE_URL/coredns/coredns/-/jobs/${CONTAINER_JOB}/artifacts/raw/release.envooo"
 
         echo "Verify Artifact"
         if source ./data/coredns.env && env | grep COREDNS; then
