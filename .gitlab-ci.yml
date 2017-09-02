@@ -10,6 +10,11 @@ before_script:
   - mkdir -p ./data ; touch ./data/empty.env
   - for envfile in data/*env ; do source $envfile ; echo ----- $envfile ---- ; cat $envfile ; done
 
+lint:
+  stage: e2e-charts
+  script:
+    - helm lint charts/*
+
 publish-charts:
   stage: e2e-charts
   script:
