@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "fullname" . }}
+spec:
+  parallelism: {{ .Values.parallelism }}
+  completions: {{ .Values.completions }}
+  template:
+    metadata:
+      name: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command: ["bash", "-c", "/tests/promselftest"]
+        env:
+        - name: PROMETHEUS_SERVICE_HOST
+          value: {{ .Values.prometheus_service_host }}
+        - name: PROMETHEUS_SERVICE_PORT
+          value: "{{ .Values.prometheus_service_port }}"
+      restartPolicy: "Never"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    k8s-app: {{ template "fullname" . }}
+spec:
+  containers:
+  - name: {{ template "fullname" . }}-8080
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    command: ["bash", "-c", "/tests/random -listen-address=:8080"]
+    ports:
+    - containerPort: 8080
+      name:  prometheus-8080
+      protocol: TCP
+  - name: {{ template "fullname" . }}-8081
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    command: ["bash", "-c", "/tests/random -listen-address=:8081"]
+    ports:
+    - containerPort: 8081
+      name: prometheus-8081
+      protocol: TCP
+  - name: {{ template "fullname" . }}-8082
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    command: ["bash", "-c", "/tests/random -listen-address=:8082"]
+    ports:
+    - containerPort: 8082
+      name: prometheus-8082
+      protocol: TCP
+

@@ -1,0 +1,13 @@
+name: prometheus-tests
+version: 0.0.1
+description: Prometheus Tests
+keywords:
+- prometheus-tests
+- prometheus-test
+home: https://prometheus.io
+icon: https://prometheus.io/assets/prometheus_logo_grey.svg
+sources:
+- https://github.com/prometheus/prometheus
+maintainers:
+- name: Vulk Wolfpack
+  email: wolfpack@vulk.coop
