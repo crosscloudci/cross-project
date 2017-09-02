@@ -1,0 +1,14 @@
+name: coredns-test
+version: 0.2.0
+description: CoreDNS Test
+keywords:
+- coredns-test
+- dns-test
+- kubedns-test
+home: https://coredns.io
+icon: https://raw.githubusercontent.com/coredns/logo/master/Icon/CoreDNS_Colour_Icon.svg
+sources:
+- https://github.com/coredns/coredns
+maintainers:
+- name: DLX
+  email: denver@ii.coop

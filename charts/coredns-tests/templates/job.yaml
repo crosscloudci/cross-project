@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "fullname" . }}
+spec:
+  parallelism: {{ .Values.parallelism }}
+  completions: {{ .Values.completions }}
+  template:
+    metadata:
+      name: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command: ["bash", "-c", "dnsperf -d /coredns/dns.txt -s $DNS_SERVICE_IP -c 30 -v"]
+        env:
+        - name: DNS_SERVICE_IP
+          value: {{ .Values.dns_service_ip }}
+      restartPolicy: "Never"
+#Get Output
+#kubectl logs -l job-name=corednstest-coredns-test --namespace=kube-system --tail=200000
+          
+ 
