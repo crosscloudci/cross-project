@@ -139,8 +139,7 @@ aws-coredns-deploy:
     - helm repo add cncf http://cncf.gitlab.io/stable
     - COREDNS_INSTALL="helm install --name coredns
          --namespace=kube-system
-         --set middleware.kubernetes.clusterCidr=10.0.0.0/24
-         --set middleware.kubernetes.clusterIP=10.0.0.10
+         --set middleware.kubernetes.clusterCidr=100.64.0.0/13
          --set middleware.prometheus.enabled=false
          --set middleware.errors.enabled=true
          --set middleware.log.enabled=true 
@@ -185,7 +184,6 @@ gke-coredns-deploy:
     - COREDNS_INSTALL="helm install --name coredns
          --namespace=kube-system
          --set middleware.kubernetes.clusterCidr=10.0.0.0/24
-         --set middleware.kubernetes.clusterIP=10.0.0.10
          --set middleware.prometheus.enabled=false
          --set middleware.errors.enabled=true
          --set middleware.log.enabled=true 
@@ -229,8 +227,7 @@ gce-coredns-deploy:
     - helm repo add cncf http://cncf.gitlab.io/stable
     - COREDNS_INSTALL="helm install --name coredns
          --namespace=kube-system
-         --set middleware.kubernetes.clusterCidr=10.0.0.0/24
-         --set middleware.kubernetes.clusterIP=10.0.0.10
+         --set middleware.kubernetes.clusterCidr=100.64.0.0/13
          --set middleware.prometheus.enabled=false
          --set middleware.errors.enabled=true
          --set middleware.log.enabled=true 
@@ -274,8 +271,7 @@ packet-coredns-deploy:
     - helm repo add cncf http://cncf.gitlab.io/stable
     - COREDNS_INSTALL="helm install --name coredns
          --namespace=kube-system
-         --set middleware.kubernetes.clusterCidr=10.0.0.0/24
-         --set middleware.kubernetes.clusterIP=10.0.0.10
+         --set middleware.kubernetes.clusterCidr=100.64.0.0/13
          --set middleware.prometheus.enabled=false
          --set middleware.errors.enabled=true
          --set middleware.log.enabled=true 
