@@ -1,5 +1,5 @@
 stages:
-  - e2e-charts
+  # - charts
   - coredns-build-branch
   - coredns-build-commit
   - coredns-deploy
@@ -10,29 +10,29 @@ before_script:
   - mkdir -p ./data ; touch ./data/empty.env
   - for envfile in data/*env ; do source $envfile ; echo ----- $envfile ---- ; cat $envfile ; done
 
-lint:
-  stage: e2e-charts
-  script:
-    - helm lint charts/*
+# lint:
+#   stage: charts
+#   script:
+#     - helm lint charts/*
 
-publish-charts:
-  stage: e2e-charts
-  script:
-    - helm repo add charts.gitlab.io https://charts.gitlab.io/ #Add Upstream Gitlab.io for kubernetes-gitlab-demo
-    - helm lint stable/* || true
-    - for chart in stable/*; do helm dep up $chart; done
-    - mkdir -p public/stable/
-    - (cd public/stable; helm package ../../stable/*)
-    - helm repo index public/stable --url https://cncf.gitlab.io/stable
-    - helm lint demo/*
-    - for chart in demo/*; do helm dep up $chart; done
-    - mkdir -p public/demo/
-    - (cd public/demo; helm package ../../demo/*)
-    - helm repo index public/demo --url https://cncf.gitlab.io/demo
-    - find public
-  artifacts:
-    paths:
-    - public
+# publish-charts:
+#   stage: charts
+#   script:
+#     - helm repo add charts.gitlab.io https://charts.gitlab.io/ #Add Upstream Gitlab.io for kubernetes-gitlab-demo
+#     - helm lint stable/* || true
+#     - for chart in stable/*; do helm dep up $chart; done
+#     - mkdir -p public/stable/
+#     - (cd public/stable; helm package ../../stable/*)
+#     - helm repo index public/stable --url https://cncf.gitlab.io/stable
+#     - helm lint demo/*
+#     - for chart in demo/*; do helm dep up $chart; done
+#     - mkdir -p public/demo/
+#     - (cd public/demo; helm package ../../demo/*)
+#     - helm repo index public/demo --url https://cncf.gitlab.io/demo
+#     - find public
+#   artifacts:
+#     paths:
+#     - public
 
 coredns-build-branch:
   image: buildpack-deps:stretch
