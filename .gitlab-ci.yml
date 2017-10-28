@@ -265,7 +265,7 @@ packet-coredns-deploy:
     - env | grep COREDNS
     - helm init
     - echo Removing any previous deploys of coredns
-    - helm get coredns > /dev/null && helm delete --purge coredns
+    - helm ls --all coredns > /dev/null && helm delete --purge coredns
     - kubectl get svc --namespace=kube-system -l name=coredns
     - kubectl get pods --namespace=kube-system -l name=kube-dns
     - helm repo add cncf http://cncf.gitlab.io/stable
