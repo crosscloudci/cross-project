@@ -177,7 +177,7 @@ Build-Branch :
 
 # Project Deploy VARs
 Project-Deploy:
-  <<: *coredns
+  <<: *project_deploy
   variables:
     KUBECONFIG: "${KUBECONFIG}"
     CLOUD: "${CLOUD}"
