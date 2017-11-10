@@ -50,6 +50,7 @@ before_script:
         exit 0 #Should Show Skipped on Gitlab CI FIXME
       else
         echo "Checking for Latest Build"
+        sleep 1000000000
         echo "curl -s -L -o data/${PROJECT}.url "${BASE_URL}/${ORG}/${PROJECT}/builds/artifacts/${BRANCH}/file/release.env?job=container""
         if cat data/"$PROJECT".url | sed -n 's/.*href="\([^"]*\).*/\1/p' | grep artifacts/raw ; then
         RELEASE_ENV=$(cat data/${PROJECT}.url | sed -n 's/.*href="\([^"]*\).*/\1/p' | grep artifacts/raw | tail -1)
