@@ -129,19 +129,6 @@ before_script:
     paths:
       - ./data
 
-
-
-# Build-Commit:
-#   image: buildpack-deps:stretch
-#   stage: Artifacts
-#   script:
-  artifacts:
-#     name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
-#     untracked: true
-#     expire_in: 5 weeks
-#     paths:
-#       - ./data
-
 .project_deploy: &project_deploy
   allow_failure: false
   image: registry.cncf.ci/cncf/cross-cloud/provisioning:ci-stable-v0-2-0
@@ -185,7 +172,7 @@ before_script:
       - ./data
 
 # Build-Branch VARs
-Build-Branch :
+Build-Branch:
   <<: *build_branch
   variables:
     BRANCH: "${BRANCH}"
@@ -193,6 +180,16 @@ Build-Branch :
     PROJECT: "${PROJECT}"
     PROJECT_TOKEN: "${PROJECT_TOKEN}"
     PROJECT_ID: "${PROJECT_ID}"
+
+# Build-Branch VARs
+Build-Commit:
+  <<: *build_commit
+  variables:
+    COMMIT: "${COMMIT}"
+    ORG: "${ORG}"
+    PROJECT: "${PROJECT}"
+    PROJECT_ID: "${PROJECT_ID}"
+
 
 # Project Deploy VARs
 Project-Deploy:
