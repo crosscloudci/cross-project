@@ -73,50 +73,69 @@ before_script:
     paths:
       - ./data
 
+.build_commit: &build_commit
+  image: buildpack-deps:stretch
+  stage: Artifacts
+  variables:
+    COMMIT: MUST BE SET
+    ORG: MUST BE SET
+    PROJECT: MUST BE SET
+    PROJECT_ID: MUST BE SET
+  script:
+    - apt update && apt -y install jq
+    - echo "$COMMIT"
+    - >
+      if [ -z "${COMMIT}" ]; then
+        exit 0 #Should Show Skipped on Gitlab CI FIXME
+      else
+        echo "Checking for Container Artifact on Commit"
+
+        echo "Fetch Full SHA" 
+        SHA=$(curl --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/repository/commits/${COMMIT}" | jq --raw-output '.id')
+        echo ${SHA}
+
+        echo "Fetch Most Recent Job ID's on Commit"
+        COMPILE_JOB=$(curl --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/${PROJECT_ID}/repository/commits/${SHA}/statuses" | jq '.[] | select(.name=="compile")' | jq -s 'sort_by(.created_at)' | jq '.[0] | .id')
+        echo ${COMPILE_JOB}
+        
+        CONTAINER_JOB=$(curl --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/${PROJECT_ID}/repository/commits/${SHA}/statuses" | jq '.[] | select(.name=="container")' | jq -s 'sort_by(.created_at)' | jq '.[0] | .id')
+
+        echo "Fetch Artifact"
+        curl -s -o data/${PROJECT}.env -L "$BASE_URL/${ORG}/${PROJECT}/-/jobs/${CONTAINER_JOB}/artifacts/raw/release.env"
+
+        echo "Verify Artifact"
+        if source ./data/${PROJECT}.env && env | grep ${PROJECT}; then
+        cat data/${PROJECT}.env
+        else
+          echo "Trigger Jobs for missing Artifacts"
+          
+          PROJECT_COMPILE_JOB=$(curl -X POST --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/${PROJECT_ID}/jobs/${COMPILE_JOB}/retry" | jq '.id')
+          echo $PROJECT_COMPILE_JOB
+          echo 'Wait for Build "FIX ME / HACK"'
+          until [ "$COMPILE_JOB_STATUS" == '"success"' ]; do COMPILE_JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/${PROJECT_ID}/jobs/${PROJECT_COMPILE_JOB}" | jq -s '.[] | .status')" ; sleep 0.5 ; done ; echo 'Build Compleate'
+          
+          PROJECT_CONTAINER_JOB=$(curl -X POST --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/${PROJECT_ID}/jobs/${CONTAINER_JOB}/retry" | jq '.id')
+          until [ "$CONTAINER_JOB_STATUS" == '"success"' ]; do CONTAINER_JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/${PROJECT_ID}/jobs/${PROJECT_CONTAINER_JOB}" | jq -s '.[] | .status')" ; sleep 0.5 ; done ; echo 'Container Build Compleate'
+          
+          curl -s -o data/${PROJECT}.env -L "$BASE_URL/${ORG}/${PROJECT}/-/jobs/${PROJECT_CONTAINER_JOB}/artifacts/raw/release.env"
+          cat data/${PROJECT}.env
+        fi
+      fi
+
+  artifacts:
+    name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
+    untracked: true
+    expire_in: 5 weeks
+    paths:
+      - ./data
+
+
+
 # Build-Commit:
 #   image: buildpack-deps:stretch
 #   stage: Artifacts
 #   script:
-#     - apt update && apt -y install jq
-#     - echo "$COREDNS_COMMIT"
-#     - >
-#       if [ -z "${COREDNS_COMMIT}" ]; then
-#         exit 0 #Should Show Skipped on Gitlab CI FIXME
-#       else
-#         echo "Checking for Container Artifact on Commit"
-
-#         echo "Fetch Full SHA" 
-#         SHA=$(curl --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/repository/commits/${COREDNS_COMMIT}" | jq --raw-output '.id')
-#         echo ${SHA}
-
-#         echo "Fetch Most Recent Job ID's on Commit"
-#         COMPILE_JOB=$(curl --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/repository/commits/${SHA}/statuses" | jq '.[] | select(.name=="compile")' | jq -s 'sort_by(.created_at)' | jq '.[0] | .id')
-#         echo ${COMPILE_JOB}
-        
-#         CONTAINER_JOB=$(curl --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/repository/commits/${SHA}/statuses" | jq '.[] | select(.name=="container")' | jq -s 'sort_by(.created_at)' | jq '.[0] | .id')
-
-#         echo "Fetch Artifact"
-#         curl -s -o data/coredns.env -L "$BASE_URL/coredns/coredns/-/jobs/${CONTAINER_JOB}/artifacts/raw/release.env"
-
-#         echo "Verify Artifact"
-#         if source ./data/coredns.env && env | grep COREDNS; then
-#         cat data/coredns.env
-#         else
-#           echo "Trigger Jobs for missing Artifacts"
-          
-#           PROJECT_COMPILE_JOB=$(curl -X POST --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/jobs/${COMPILE_JOB}/retry" | jq '.id')
-#           echo $PROJECT_COMPILE_JOB
-#           echo 'Wait for Build "FIX ME / HACK"'
-#           until [ "$COMPILE_JOB_STATUS" == '"success"' ]; do COMPILE_JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/jobs/${PROJECT_COMPILE_JOB}" | jq -s '.[] | .status')" ; sleep 0.5 ; done ; echo 'Build Compleate'
-          
-#           PROJECT_CONTAINER_JOB=$(curl -X POST --header "PRIVATE-TOKEN: ${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/jobs/${CONTAINER_JOB}/retry" | jq '.id')
-#           until [ "$CONTAINER_JOB_STATUS" == '"success"' ]; do CONTAINER_JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/9/jobs/${PROJECT_CONTAINER_JOB}" | jq -s '.[] | .status')" ; sleep 0.5 ; done ; echo 'Container Build Compleate'
-          
-#           curl -s -o data/coredns.env -L "$BASE_URL/coredns/coredns/-/jobs/${PROJECT_CONTAINER_JOB}/artifacts/raw/release.env"
-#           cat data/coredns.env
-#         fi
-#       fi
-#   artifacts:
+  artifacts:
 #     name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
 #     untracked: true
 #     expire_in: 5 weeks
