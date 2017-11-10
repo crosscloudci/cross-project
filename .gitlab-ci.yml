@@ -157,3 +157,13 @@ coredns-build-commit:
     expire_in: 5 weeks
     paths:
       - ./data
+
+# Cloud Deploy VARs
+CoreDNS-Deploy:
+  <<: *coredns
+  variables:
+    KUBECONFIG: "${KUBECONFIG}"
+    CLOUD: "${CLOUD}"
+
+
+
