@@ -56,8 +56,8 @@ before_script:
         curl -o data/"$PROJECT".env -L ${BASE_URL}/$RELEASE_ENV
         cat data/"$PROJECT".env
         else
-          PROJECT_PIPELINE=$(curl -X POST -F token=$CI_JOB_TOKEN -F ref=$BRANCH https://gitlab.cncf.ci/api/v4/projects/$PROJECT_ID/trigger/pipeline | jq '.id')
-          # PROJECT_PIPELINE=$(curl -X POST -F token=$PROJECT_TOKEN -F ref=$BRANCH -F "variables[BUILD_TRIGGER]=yes" https://gitlab.cncf.ci/api/v4/projects/$PROJECT_ID/trigger/pipeline | jq '.id')
+          # PROJECT_PIPELINE=$(curl -X POST -F token=$CI_JOB_TOKEN -F ref=$BRANCH https://gitlab.cncf.ci/api/v4/projects/$PROJECT_ID/trigger/pipeline | jq '.id')
+          PROJECT_PIPELINE=$(curl -X POST -F token=$PROJECT_TOKEN -F ref=$BRANCH -F "variables[BUILD_TRIGGER]=yes" https://gitlab.cncf.ci/api/v4/projects/$PROJECT_ID/trigger/pipeline | jq '.id')
 
           echo 'Wait for Build "FIX ME / HACK"'
           until [ "$JOB_STATUS" == '"success"' ]; do JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/$PROJECT_ID/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="container") | .status')" ; sleep 0.5 ; done ; echo 'Build Compleate'
@@ -164,6 +164,16 @@ before_script:
     expire_in: 5 weeks
     paths:
       - ./data
+
+# Build-Branch VARs
+Build-Branch :
+  <<: *build_branch
+  variables:
+    BRANCH: "${BRANCH}"
+    ORG: "${ORG}"
+    PROJECT: "${PROJECT}"
+    PROJECT_TOKEN: "${PROJECT_TOKEN}"
+    PROJECT_ID: "${PROJECT_ID}"
 
 # Cloud Deploy VARs
 CoreDNS-Deploy:
