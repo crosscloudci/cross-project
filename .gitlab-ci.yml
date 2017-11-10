@@ -37,6 +37,7 @@ before_script:
 .build_branch: &build_branch
   image: buildpack-deps:stretch
   stage: Artifacts
+  allow_failure: true
   variables:
     BRANCH: MUST BE SET
     ORG: MUST BE SET
@@ -47,7 +48,7 @@ before_script:
     - apt update && apt -y install jq
     - >
       if [ -z "${BRANCH}" ]; then
-        exit 0 #Should Show Skipped on Gitlab CI FIXME
+        exit 1 #Should Show Skipped on Gitlab CI FIXME
       else
         echo "Checking for Latest Build"
         curl -s -L -o data/${PROJECT}.url "${BASE_URL}/${ORG}/${PROJECT}/builds/artifacts/${BRANCH}/file/release.env?job=container"
@@ -76,6 +77,7 @@ before_script:
 .build_commit: &build_commit
   image: buildpack-deps:stretch
   stage: Artifacts
+  allow_failure: true
   variables:
     COMMIT: MUST BE SET
     ORG: MUST BE SET
@@ -86,7 +88,7 @@ before_script:
     - echo "$COMMIT"
     - >
       if [ -z "${COMMIT}" ]; then
-        exit 0 #Should Show Skipped on Gitlab CI FIXME
+        exit 1 #Should Show Skipped on Gitlab CI FIXME
       else
         echo "Checking for Container Artifact on Commit"
 
