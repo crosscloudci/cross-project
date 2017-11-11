@@ -39,11 +39,11 @@ before_script:
   stage: Artifacts
   allow_failure: true
   variables:
-    BRANCH: MUST BE SET
-    ORG: MUST BE SET
-    PROJECT: MUST BE SET
-    PROJECT_TOKEN: MUST BE SET
-    PROJECT_ID: MUST BE SET
+    # BRANCH: MUST BE SET
+    # ORG: MUST BE SET
+    # PROJECT: MUST BE SET
+    # PROJECT_TOKEN: MUST BE SET
+    # PROJECT_ID: MUST BE SET
   script:
     - apt update && apt -y install jq
     - >
@@ -79,10 +79,10 @@ before_script:
   stage: Artifacts
   allow_failure: true
   variables:
-    COMMIT: MUST BE SET
-    ORG: MUST BE SET
-    PROJECT: MUST BE SET
-    PROJECT_ID: MUST BE SET
+    # COMMIT: MUST BE SET
+    # ORG: MUST BE SET
+    # PROJECT: MUST BE SET
+    # PROJECT_ID: MUST BE SET
   script:
     - apt update && apt -y install jq
     - echo "$COMMIT"
@@ -176,22 +176,10 @@ before_script:
 # Build-Branch VARs
 Build-Branch:
   <<: *build_branch
-  variables:
-    BRANCH: "${BRANCH}"
-    ORG: "${ORG}"
-    PROJECT: "${PROJECT}"
-    PROJECT_TOKEN: "${PROJECT_TOKEN}"
-    PROJECT_ID: "${PROJECT_ID}"
 
 # Build-Branch VARs
 Build-Commit:
   <<: *build_commit
-  variables:
-    COMMIT: "${COMMIT}"
-    ORG: "${ORG}"
-    PROJECT: "${PROJECT}"
-    PROJECT_ID: "${PROJECT_ID}"
-
 
 # Project Deploy VARs
 Project-Deploy:
