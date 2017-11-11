@@ -52,6 +52,7 @@ before_script:
         PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/$PROJECT_ID/pipelines/${SOURCE}/jobs?scope=success" | jq '.[] | select(.name=="container") | .id') 
         curl -s -o data/"$PROJECT".env -L "$BASE_URL/${ORG}/${PROJECT}/-/jobs/${PROJECT_JOB}/artifacts/raw/release.env"
         cat data/"$PROJECT".env
+        cat data/coredns.env
       fi
 
 .build_branch: &build_branch
@@ -76,7 +77,6 @@ before_script:
         RELEASE_ENV=$(cat data/${PROJECT}.url | sed -n 's/.*href="\([^"]*\).*/\1/p' | grep artifacts/raw | tail -1)
         curl -o data/${PROJECT}.env -L ${BASE_URL}/$RELEASE_ENV
         cat data/${PROJECT}.env
-        cat data/coredns.env
         else
           # PROJECT_PIPELINE=$(curl -X POST -F token=$CI_JOB_TOKEN -F ref=$BRANCH https://gitlab.cncf.ci/api/v4/projects/$PROJECT_ID/trigger/pipeline | jq '.id')
           PROJECT_PIPELINE=$(curl -X POST -F token=$PROJECT_TOKEN -F ref=$BRANCH -F "variables[BUILD_TRIGGER]=yes" https://gitlab.cncf.ci/api/v4/projects/$PROJECT_ID/trigger/pipeline | jq '.id')
