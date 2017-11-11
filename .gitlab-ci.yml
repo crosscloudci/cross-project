@@ -34,6 +34,26 @@ before_script:
 #     paths:
 #     - public
 
+.build_source: &build_source
+  image: buildpack-deps:stretch
+  stage: Artifacts
+  allow_failure: true
+  variables:
+    # SOURCE
+    # ORG: MUST BE SET
+    # PROJECT: MUST BE SET
+    # PROJECT_ID: MUST BE SET
+  script:
+    - apt update && apt -y install jq
+    - >
+      if [ -z "${SOURCE}" ]; then
+        exit 1 #Should Show Skipped on Gitlab CI FIXME
+      else
+        PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/$PROJECT_ID/pipelines/${SOURCE}/jobs?scope=success" | jq '.[] | select(.name=="container") | .id') 
+        curl -s -o data/"$PROJECT".env -L "$BASE_URL/${ORG}/${PROJECT}/-/jobs/${PROJECT_JOB}/artifacts/raw/release.env"
+        cat data/"$PROJECT".env
+      fi
+
 .build_branch: &build_branch
   image: buildpack-deps:stretch
   stage: Artifacts
