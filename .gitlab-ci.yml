@@ -215,7 +215,7 @@ Build-Commit:
 
 # Project Deploy VARs
 Cross-Project:
-  <<: *Cross-Project
+  <<: *cross-croject
   variables:
     KUBECONFIG: "${KUBECONFIG}"
     CLOUD: "${CLOUD}"
