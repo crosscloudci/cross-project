@@ -179,7 +179,7 @@ before_script:
     - kubectl get svc --namespace=kube-system -l name="${PROJECT}"
     - kubectl get pods --namespace=kube-system -l name="${PROJECT}"
     - helm repo add cncf http://cncf.gitlab.io/stable
-    - ${PROJECT}_INSTALL="helm install --name ${PROJECT}
+    - helm install --name "${PROJECT}"
          --namespace=kube-system
          --set middleware.kubernetes.clusterCidr=100.64.0.0/13
          --set middleware.prometheus.enabled=false
@@ -187,12 +187,12 @@ before_script:
          --set middleware.log.enabled=true 
          --set middleware.loadbalance.enabled=false
          --set middleware.test.enabled=false
-         --set image.repository=${IMAGE}
-         --set image.tag=${TAG}
-         cncf/${PROJECT}"
-    - echo $COREDNS_INSTALL ; $COREDNS_INSTALL
-    - DEPLOYED_COREDNS_IMAGE=$(kubectl get pods --namespace=kube-system -l k8s-app=coredns -o jsonpath="{.items[0].spec.containers[0].image}")
-    - echo Deployed CoreDNS Image - $DEPLOYED_COREDNS_IMAGE
+         --set image.repository="${IMAGE}"
+         --set image.tag="${TAG}"
+         cncf/"${PROJECT}"
+    - sleep 10000000
+    - DEPLOYED_IMAGE=$(kubectl get pods --namespace=kube-system -l k8s-app="${PROJECT}" -o jsonpath="{.items[0].spec.containers[0].image}")
+    - echo Deployed Image - $DEPLOYED_IMAGE
     - kubectl get svc --namespace=kube-system -l k8s-app="${PROJECT}"
     - kubectl get pods --namespace=kube-system -l k8s-app="${PROJECT}"
   artifacts:
