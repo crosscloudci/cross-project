@@ -190,7 +190,6 @@ before_script:
          --set image.repository="${IMAGE}"
          --set image.tag="${TAG}"
          cncf/"${PROJECT}"
-    - sleep 10000000
     - DEPLOYED_IMAGE=$(kubectl get pods --namespace=kube-system -l k8s-app="${PROJECT}" -o jsonpath="{.items[0].spec.containers[0].image}")
     - echo Deployed Image - $DEPLOYED_IMAGE
     - kubectl get svc --namespace=kube-system -l k8s-app="${PROJECT}"
