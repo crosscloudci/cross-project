@@ -163,22 +163,23 @@ before_script:
   allow_failure: false
   image: registry.cncf.ci/cncf/cross-cloud/provisioning:ci-stable-v0-2-0
   stage: Cross-Project
-  variables:
-    KUBECONFIG: MUST BE SET
-    CLOUD: MUST BE SET
+  # variables:
+    # KUBECONFIG: MUST BE SET
+    # CLOUD: MUST BE SET
   script:
     - echo "$KUBECONFIG" | base64 -d | tee ./kubeconfig
     - export KUBECONFIG=./kubeconfig
     - kubectl get nodes
     - kubectl get componentstatuses
-    - env | grep COREDNS
+    - env | grep IMAGE
+    - env | grep TAG
     - helm init
-    - echo Removing any previous deploys of coredns
-    - helm ls --all coredns > /dev/null && helm delete --purge coredns || true
-    - kubectl get svc --namespace=kube-system -l name=coredns
-    - kubectl get pods --namespace=kube-system -l name=kube-dns
+    - echo Removing any previous deploys of "${PROJECT}"
+    - helm ls --all "${PROJECT}" > /dev/null && helm delete --purge "${PROJECT}" || true
+    - kubectl get svc --namespace=kube-system -l name="${PROJECT}"
+    - kubectl get pods --namespace=kube-system -l name="${PROJECT}"
     - helm repo add cncf http://cncf.gitlab.io/stable
-    - COREDNS_INSTALL="helm install --name coredns
+    - ${PROJECT}_INSTALL="helm install --name ${PROJECT}
          --namespace=kube-system
          --set middleware.kubernetes.clusterCidr=100.64.0.0/13
          --set middleware.prometheus.enabled=false
@@ -186,14 +187,14 @@ before_script:
          --set middleware.log.enabled=true 
          --set middleware.loadbalance.enabled=false
          --set middleware.test.enabled=false
-         --set image.repository=${COREDNS_IMAGE}
-         --set image.tag=${COREDNS_TAG}
-         cncf/coredns"
+         --set image.repository=${IMAGE}
+         --set image.tag=${TAG}
+         cncf/${PROJECT}"
     - echo $COREDNS_INSTALL ; $COREDNS_INSTALL
     - DEPLOYED_COREDNS_IMAGE=$(kubectl get pods --namespace=kube-system -l k8s-app=coredns -o jsonpath="{.items[0].spec.containers[0].image}")
     - echo Deployed CoreDNS Image - $DEPLOYED_COREDNS_IMAGE
-    - kubectl get svc --namespace=kube-system -l k8s-app=coredns
-    - kubectl get pods --namespace=kube-system -l k8s-app=coredns
+    - kubectl get svc --namespace=kube-system -l k8s-app="${PROJECT}"
+    - kubectl get pods --namespace=kube-system -l k8s-app="${PROJECT}"
   artifacts:
     name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
     untracked: true
@@ -216,9 +217,6 @@ Build-Commit:
 # Project Deploy VARs
 Cross-Project:
   <<: *cross-project
-  variables:
-    KUBECONFIG: "${KUBECONFIG}"
-    CLOUD: "${CLOUD}"
 
 
 
