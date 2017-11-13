@@ -1,6 +1,18 @@
 rbac:
   create: false
 
+alertmanager:
+  enabled: false 
+
+kubeStateMetrics:
+  enabled: false
+
+server:
+  enabled: false
+
+pushgateway:
+  enabled: false
+  
 nodeExporter:
   ## If false, node-exporter will not be installed
   ##
