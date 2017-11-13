@@ -176,8 +176,8 @@ before_script:
     - helm init
     - echo Removing any previous deploys of "${PROJECT}"
     - helm ls --all "${PROJECT}" > /dev/null && helm delete --purge "${PROJECT}" || true
-    - kubectl get svc -l "${FILTER}"="${PROJECT}"
-    - kubectl get pods -l "${FILTER}"="${PROJECT}"
+    - kubectl get svc "${LABEL_ARGS}"
+    - kubectl get pods "${LABEL_ARGS}"
     - helm repo add cncf http://cncf.gitlab.io/stable
     - helm install -f defaults/"${PROJECT}".yaml
          --name "${PROJECT}"
@@ -185,10 +185,10 @@ before_script:
          --set "${TAG_ARGS}"="${TAG}"
          stable/"${PROJECT}"
     - sleep 1000000000
-    - DEPLOYED_IMAGE=$(kubectl get pods -l "${FILTER}"="${PROJECT}" -o jsonpath="{.items[0].spec.containers[0].image}")
+    - DEPLOYED_IMAGE=$(kubectl get pods "${LABEL_ARGS}" -o jsonpath="{.items[0].spec.containers[0].image}")
     - echo Deployed Image - $DEPLOYED_IMAGE
-    - kubectl get svc -l "${FILTER}"="${PROJECT}"
-    - kubectl get pods -l "${FILTER}"="${PROJECT}"
+    - kubectl get svc "${LABEL_ARGS}"
+    - kubectl get pods "${LABEL_ARGS}"
   artifacts:
     name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
     untracked: true
