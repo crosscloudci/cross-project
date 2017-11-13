@@ -184,7 +184,7 @@ before_script:
          --set "${IMAGE_ARGS}"="${IMAGE}"
          --set "${TAG_ARGS}"="${TAG}"
          stable/"${PROJECT}"
-    - DEPLOYED_IMAGE=$(kubectl get pods "${LABEL_ARGS}" -o jsonpath="{FILTER}")
+    - DEPLOYED_IMAGE=$(kubectl get pods "${LABEL_ARGS}" -o jsonpath="${FILTER}")
     - echo Deployed Image - $DEPLOYED_IMAGE
     - kubectl get svc "${LABEL_ARGS}"
     - kubectl get pods "${LABEL_ARGS}"
