@@ -179,7 +179,7 @@ before_script:
     - kubectl get svc -l k8s-app="${PROJECT}"
     - kubectl get pods -l k8s-app="${PROJECT}"
     - helm repo add cncf http://cncf.gitlab.io/stable
-    - echo "helm install -f defaults/"${PROJECT}".yaml
+    - "helm install -f defaults/"${PROJECT}".yaml
          --name "${PROJECT}"
          --set "${IMAGE_ARGS}"="${IMAGE}"
          --set "${TAG_ARGS}"="${TAG}"
