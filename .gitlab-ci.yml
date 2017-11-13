@@ -181,9 +181,9 @@ before_script:
     - helm repo add cncf http://cncf.gitlab.io/stable
     - echo "helm install -f defaults/"${PROJECT}".yaml
          --name "${PROJECT}"
-         "${DEPLOY_ARGS}"
+         --set "${IMAGE_ARGS}"="${IMAGE}"
+         --set "${TAG_ARGS}"="${TAG}"
          stable/"${PROJECT}""
-    - sleep 1000000
     - DEPLOYED_IMAGE=$(kubectl get pods -l k8s-app="${PROJECT}" -o jsonpath="{.items[0].spec.containers[0].image}")
     - echo Deployed Image - $DEPLOYED_IMAGE
     - kubectl get svc -l k8s-app="${PROJECT}"
