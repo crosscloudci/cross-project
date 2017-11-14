@@ -46,3 +46,4 @@ spec:
     component: "{{ .Values.server.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.server.service.type }}"
+{{- end }}
