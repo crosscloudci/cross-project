@@ -45,7 +45,7 @@ middleware:
     enabled: false
     port: "9153"
   errors:
-    enabled: true
+    enabled: false
     file: "stderr"
   log:
     enabled: true
