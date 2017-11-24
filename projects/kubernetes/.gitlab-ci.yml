@@ -15,6 +15,7 @@ before_script:
   - sed -i -e '/ windows\/386/ s/^/#/' hack/lib/golang.sh
   - sed -i -e '/ windows\/amd64/ s/^/#/' hack/lib/golang.sh
   - export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
+  - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
 
 
 compile:
@@ -69,7 +70,7 @@ container:
     - echo export KUBE_AGGREGATOR_TAG="$KUBE_DOCKER_IMAGE_TAG" >> release.env
     - echo export CLOUD_CONTROLLER_IMAGE="$CI_REGISTRY_IMAGE/cloud-controller-manager-amd64" >> release.env
     - echo export CLOUD_CONTROLLER_TAG="$KUBE_DOCKER_IMAGE_TAG" >> release.env
-    - echo export DEPLOYMENT_SHA="$KUBE_DOCKER_IMAGE_TAG" >> release.env
+    - echo export DEPLOYMENT_SHA="${CI_COMMIT_REF_SLUG}.${CI_PIPELINE_ID}.${CI_COMMIT_SHA_SHORT}" >> release.env
     - cat release.env
   artifacts:
     name: "${CI_JOB_NAME}.${CI_PIPELINE_ID}.${CI_JOB_ID}"
