@@ -50,7 +50,6 @@ container:
     - echo "${KUBE_DOCKER_IMAGE_TAG}"
     - docker images | grep kubernetes/kubernetes
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
-    - docker push "$CI_REGISTRY_IMAGE/hyperkube-amd64:$KUBE_DOCKER_IMAGE_TAG"
     - docker push "$CI_REGISTRY_IMAGE/kube-apiserver-amd64:$KUBE_DOCKER_IMAGE_TAG"
     - docker push "$CI_REGISTRY_IMAGE/kube-controller-manager-amd64:$KUBE_DOCKER_IMAGE_TAG"
     - docker push "$CI_REGISTRY_IMAGE/kube-scheduler-amd64:$KUBE_DOCKER_IMAGE_TAG"
