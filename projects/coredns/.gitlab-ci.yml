@@ -5,8 +5,8 @@ stages:
   - Cross-Project
 
 before_script:
+  - export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
   - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
-  - mkdir ./auth
 
 compile:
   image: golang:1.8.1
@@ -68,12 +68,12 @@ container:
         exit 0
       else
         apt update && apt install -y jq
-        PROJECT_PIPELINE=$(curl -X POST -F token=$CROSS_CLOUD_CI_JOB_TOKEN -F ref=stable-v0.2.0-integrations -F "variables[BRANCH]="${CLOUD_BRANCH}"" -F "variables[COMMIT]="${CLOUD_COMMIT}"" -F "variables[SOURCE]="${CI_PIPELINE_ID}"" -F "variables[DISABLE_SOURCE]="${CLOUD_DISABLE_SOURCE}"" -F "variables[ORG]=kubernetes" -F "variables[PROJECT]=kubernetes" -F "variables[PROJECT_ID]=14" -F "variables[PROJECT_TOKEN]="${KUBERNETES_PROJECT_TOKEN}"" -F "variables[CLOUD]="${CLOUD}"" https://gitlab.cncf.ci/api/v4/projects/2/trigger/pipeline | jq '.id')
+        PROJECT_PIPELINE=$(curl -X POST -F token=$CROSS_CLOUD_CI_JOB_TOKEN -F ref=stable-v0.2.0-integrations -F "variables[BRANCH]="${CLOUD_BRANCH}"" -F "variables[COMMIT]="${CLOUD_COMMIT}"" -F "variables[SOURCE]="${CI_PIPELINE_ID}"" -F "variables[DISABLE_SOURCE]="${CLOUD_DISABLE_SOURCE}"" -F "variables[ORG]=kubernetes" -F "variables[PROJECT]=kubernetes" -F "variables[PROJECT_ID]=14" -F "variables[PROJECT_TOKEN]="${KUBERNETES_PROJECT_TOKEN}"" -F "variables[CLOUD]="${CLOUD}"" "$BASE_URL"/api/v4/projects/2/trigger/pipeline | jq '.id')
         # PROJECT_PIPELINE=$(curl -X POST -F token=$CI_JOB_TOKEN -F ref=stable-v0.2.0-integrations https://gitlab.cncf.ci/api/v4/projects/2/trigger/pipeline | jq '.id')
 
         echo 'Wait for Cluster "FIX ME / HACK"'
         until [ "$JOB_STATUS" == '"success"' ]; do
-            JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="Kubernetes-Deploy") | .status')"
+            JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="Kubernetes-Deploy") | .status')"
             sleep 0.5
             if [ $"JOB_STATUS" == '"failed"' ]; then
                 exit 1
@@ -85,7 +85,7 @@ container:
         done
         echo 'Cluster Ready'
 
-        PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="Kubernetes-Deploy") | .id')
+        PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="Kubernetes-Deploy") | .id')
 
         export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
         curl -s -o kubeconfig -L "$BASE_URL/cncf/cross-cloud/-/jobs/${PROJECT_JOB}/artifacts/raw/data/$CLOUD-stable-v0-2-0-integrations/kubeconfig"
@@ -116,13 +116,13 @@ container:
         echo 'Trigger Cross-Project'
         apt update && apt install -y jq
         KUBECONFIG=$(cat ./kubeconfig | tr -d '\n')
-        PROJECT_PIPELINE=$(curl -X POST -F token=$CROSS_PROJECT_CI_JOB_TOKEN -F ref=master -F "variables[BRANCH]="${PROJECT_BRANCH}"" -F "variables[COMMIT]="${PROJECT_COMMIT}"" -F "variables[SOURCE]="${CI_PIPELINE_ID}"" -F "variables[DISABLE_SOURCE]="${PROJECT_DISABLE_SOURCE}"" -F "variables[KUBECONFIG]="${KUBECONFIG}"" -F "variables[ORG]="${CI_PROJECT_NAMESPACE}"" -F "variables[PROJECT]="${CI_PROJECT_NAME}"" -F "variables[PROJECT_ID]="${CI_PROJECT_ID}"" -F "variables[PROJECT_TOKEN]="${COREDNS_PROJECT_TOKEN}"" -F "variables[IMAGE_ARGS]=image.repository" -F "variables[TAG_ARGS]=image.tag" -F "variables[LABEL_ARGS]=-l k8s-app=coredns" -F "variables[FILTER]=.items[0].spec.containers[0].image" -F "variables[CHART]=coredns" -F "variables[NAME]=coredns" -F "variables[CHART_REPO]=stable" https://gitlab.cncf.ci/api/v4/projects/45/trigger/pipeline | jq '.id')
+        PROJECT_PIPELINE=$(curl -X POST -F token=$CROSS_PROJECT_CI_JOB_TOKEN -F ref=master -F "variables[BRANCH]="${PROJECT_BRANCH}"" -F "variables[COMMIT]="${PROJECT_COMMIT}"" -F "variables[SOURCE]="${CI_PIPELINE_ID}"" -F "variables[DISABLE_SOURCE]="${PROJECT_DISABLE_SOURCE}"" -F "variables[KUBECONFIG]="${KUBECONFIG}"" -F "variables[ORG]="${CI_PROJECT_NAMESPACE}"" -F "variables[PROJECT]="${CI_PROJECT_NAME}"" -F "variables[PROJECT_ID]="${CI_PROJECT_ID}"" -F "variables[PROJECT_TOKEN]="${COREDNS_PROJECT_TOKEN}"" -F "variables[IMAGE_ARGS]=image.repository" -F "variables[TAG_ARGS]=image.tag" -F "variables[LABEL_ARGS]=-l k8s-app=coredns" -F "variables[FILTER]=.items[0].spec.containers[0].image" -F "variables[CHART]=coredns" -F "variables[NAME]=coredns" -F "variables[CHART_REPO]=stable" "$BASE_URL"/api/v4/projects/45/trigger/pipeline | jq '.id')
         # PROJECT_PIPELINE=$(curl -X POST -F token=$CI_JOB_TOKEN -F ref=master https://gitlab.cncf.ci/api/v4/projects/45/trigger/pipeline | jq '.id')
 
         echo 'Verify Project Deployment'
 
         until [ "$JOB_STATUS" == '"success"' ]; do
-            JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/45/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="Cross-Project") | .status')"
+            JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/45/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="Cross-Project") | .status')"
             sleep 0.5
             if [ $"JOB_STATUS" == '"failed"' ]; then
                 exit 1
