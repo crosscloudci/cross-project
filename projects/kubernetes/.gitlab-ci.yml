@@ -14,7 +14,8 @@ before_script:
   - sed -i -e '/ darwin\/386/ s/^/#/' hack/lib/golang.sh
   - sed -i -e '/ windows\/386/ s/^/#/' hack/lib/golang.sh
   - sed -i -e '/ windows\/amd64/ s/^/#/' hack/lib/golang.sh
-  # - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
+  - export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
+
 
 compile:
   stage: Build
@@ -31,7 +32,7 @@ compile:
     - echo "${KUBE_DOCKER_IMAGE_TAG}"
     - ./build/release.sh
     - cp -a _output/dockerized/bin/linux/amd64 linux-amd64
-    - echo export KUBELET_ARTIFACT=https://gitlab.cncf.ci/kubernetes/kubernetes/-/jobs/${CI_JOB_ID}/artifacts/raw/linux-amd64/kubelet >> release.env
+    - echo export KUBELET_ARTIFACT="$BASE_URL"/kubernetes/kubernetes/-/jobs/${CI_JOB_ID}/artifacts/raw/linux-amd64/kubelet >> release.env
     - cat release.env
   artifacts:
     name: "${CI_JOB_NAME}.${CI_PIPELINE_ID}.${CI_JOB_ID}"
@@ -91,12 +92,12 @@ container:
         exit 0
       else
         apt update && apt install -y jq
-        PROJECT_PIPELINE=$(curl -X POST -F token=$CROSS_CLOUD_CI_JOB_TOKEN -F ref=stable-v0.2.0-integrations -F "variables[BRANCH]="${CLOUD_BRANCH}"" -F "variables[COMMIT]="${CLOUD_COMMIT}"" -F "variables[SOURCE]="${CI_PIPELINE_ID}"" -F "variables[DISABLE_SOURCE]="${CLOUD_DISABLE_SOURCE}"" -F "variables[ORG]=kubernetes" -F "variables[PROJECT]=kubernetes" -F "variables[PROJECT_ID]=14" -F "variables[PROJECT_TOKEN]="${KUBERNETES_PROJECT_TOKEN}"" -F "variables[CLOUD]="${CLOUD}"" https://gitlab.cncf.ci/api/v4/projects/2/trigger/pipeline | jq '.id')
+        PROJECT_PIPELINE=$(curl -X POST -F token=$CROSS_CLOUD_CI_JOB_TOKEN -F ref=stable-v0.2.0-integrations -F "variables[BRANCH]="${CLOUD_BRANCH}"" -F "variables[COMMIT]="${CLOUD_COMMIT}"" -F "variables[SOURCE]="${CI_PIPELINE_ID}"" -F "variables[DISABLE_SOURCE]="${CLOUD_DISABLE_SOURCE}"" -F "variables[ORG]=kubernetes" -F "variables[PROJECT]=kubernetes" -F "variables[PROJECT_ID]=14" -F "variables[PROJECT_TOKEN]="${KUBERNETES_PROJECT_TOKEN}"" -F "variables[CLOUD]="${CLOUD}"" "$BASE_URL"/api/v4/projects/2/trigger/pipeline | jq '.id')
         # PROJECT_PIPELINE=$(curl -X POST -F token=$CI_JOB_TOKEN -F ref=stable-v0.2.0-integrations https://gitlab.cncf.ci/api/v4/projects/2/trigger/pipeline | jq '.id')
 
         echo 'Wait for Cluster "FIX ME / HACK"'
         until [ "$JOB_STATUS" == '"success"' ]; do
-            JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs" | jq '.[] | select(.name=="Kubernetes-Deploy") | .status')"
+            JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs" | jq '.[] | select(.name=="Kubernetes-Deploy") | .status')"
             sleep 0.5
             if [ $"JOB_STATUS" == '"failed"' ]; then
                 exit 1
@@ -109,7 +110,7 @@ container:
         echo 'Cluster Ready'
 
 
-        PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "https://gitlab.cncf.ci/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="Kubernetes-Deploy") | .id')
+        PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="Kubernetes-Deploy") | .id')
         export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
         curl -s -o kubeconfig -L "$BASE_URL/cncf/cross-cloud/-/jobs/${PROJECT_JOB}/artifacts/raw/data/$CLOUD-stable-v0-2-0-integrations/kubeconfig"
         cat ./kubeconfig | base64 | tee ./kubeconfig
