@@ -14,7 +14,7 @@ compile:
   script:
     - ln -s /builds /go/src/github.com
     - cd /go/src/github.com/coredns/coredns
-    # - go get github.com/mholt/caddy
+    - go get github.com/mholt/caddy
     - go get github.com/estesp/manifest-tool
     - go get github.com/progrium/gh-release
     - make -j $(getconf _NPROCESSORS_ONLN)
