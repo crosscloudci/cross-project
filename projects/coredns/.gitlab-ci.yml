@@ -36,7 +36,7 @@ container:
   script:
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
     - cp build/Linux/coredns . || true
-    - cp build/linux/amd64/coredns || true
+    - cp build/linux/amd64/coredns . || true
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - docker build --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
     - docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
