@@ -76,7 +76,7 @@ container:
         PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="Kubernetes-Deploy") | .id')
 
         export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
-        curl -s -o kubeconfig -L "$BASE_URL/cncf/cross-cloud/-/jobs/${PROJECT_JOB}/artifacts/raw/data/$CLOUD-stable-v0-2-0-integrations/kubeconfig"
+        curl -s -o kubeconfig -L "$BASE_URL/cncf/cross-cloud/-/jobs/${PROJECT_JOB}/artifacts/raw/data/$CLOUD/kubeconfig"
         cat ./kubeconfig | base64 | tee ./kubeconfig
 
       fi
