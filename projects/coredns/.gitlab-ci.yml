@@ -14,9 +14,12 @@ compile:
   script:
     - ln -s /builds /go/src/github.com
     - cd /go/src/github.com/coredns/coredns
-    - go get github.com/mholt/caddy
     - go get github.com/estesp/manifest-tool
     - go get github.com/progrium/gh-release
+    - go get github.com/mholt/caddy
+    - go get github.com/miekg/dns
+    - go get golang.org/x/net/context
+    - go get golang.org/x/text
     - make -j $(getconf _NPROCESSORS_ONLN)
         -f Makefile.release build
   artifacts:
