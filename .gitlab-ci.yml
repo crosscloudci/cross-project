@@ -92,9 +92,9 @@ before_script:
           until [ "$JOB_STATUS" == '"success"' ]; do
               JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/$PROJECT_ID/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="container") | .status')"
               sleep 0.5
-              if [ $"JOB_STATUS" == '"failed"' ]; then
+              if [ "$JOB_STATUS" == '"failed"' ]; then
                   exit 1
-              elif [ $"JOB_STATUS" == '"canceled"' ]; then
+              elif [ "$JOB_STATUS" == '"canceled"' ]; then
                   exit 1
               else
                   continue
@@ -157,9 +157,9 @@ before_script:
           until [ "$COMPILE_JOB_STATUS" == '"success"' ]; do
               COMPILE_JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/${PROJECT_ID}/jobs/${PROJECT_COMPILE_JOB}" | jq -s '.[] | .status')"
               sleep 0.5
-              if [ $"PROJECT_COMPILE_JOB" == '"failed"' ]; then
+              if [ "$PROJECT_COMPILE_JOB" == '"failed"' ]; then
                   exit 1
-              elif [ $"PROJECT_COMPILE_JOB" == '"canceled"' ]; then
+              elif [ "$PROJECT_COMPILE_JOB" == '"canceled"' ]; then
                   exit 1
               else
                   continue
@@ -172,9 +172,9 @@ before_script:
           until [ "$CONTAINER_JOB_STATUS" == '"success"' ]; do
               CONTAINER_JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/${PROJECT_ID}/jobs/${PROJECT_CONTAINER_JOB}" | jq -s '.[] | .status')"
               sleep 0.5
-              if [ $"CONTAINER_JOB_STATUS" == '"failed"' ]; then
+              if [ "$CONTAINER_JOB_STATUS" == '"failed"' ]; then
                   exit 1
-              elif [ $"CONTAINER_JOB_STATUS" == '"canceled"' ]; then
+              elif [ "$CONTAINER_JOB_STATUS" == '"canceled"' ]; then
                   exit 1
               else
                   continue
