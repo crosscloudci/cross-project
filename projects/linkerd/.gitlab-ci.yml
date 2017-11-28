@@ -41,9 +41,9 @@ compile:
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
     - DOCKER_TARGET="dockerBuildAndPush"
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
-    - ./sbt "set imageNames in docker in (linkerd, Bundle) += ImageName("registry.staging.cncf.ci/linkerd/linkerd:v"+version.value)" \
-            "set imageNames in docker in (namerd, Bundle) += ImageName("registry.staging.cncf.ci/linkerd/linkerd:v"+version.value)" \
-            "set imageNames in docker in (namerd, Dcos) += ImageName("registry.staging.cncf.ci/linkerd/linkerd:v"+version.value)"
+    - ./sbt "set imageNames in docker in (linkerd, Bundle) += ImageName("registry.staging.cncf.ci/linkerd/linkerd")" \
+            "set imageNames in docker in (namerd, Bundle) += ImageName("registry.staging.cncf.ci/linkerd/linkerd")" \
+            "set imageNames in docker in (namerd, Dcos) += ImageName("registry.staging.cncf.ci/linkerd/linkerd")"
     - ./sbt "set Base.dockerTag in (linkerd, Bundle) := \"${IMAGE_TAG}\"" "linkerd/bundle:${DOCKER_TARGET}" \
             "set Base.dockerTag in (namerd, Bundle) := \"${IMAGE_TAG}\"" "namerd/bundle:${DOCKER_TARGET}" \
             "set Base.dockerTag in (namerd, Dcos) := \"dcos-${IMAGE_TAG}\"" "namerd/dcos:${DOCKER_TARGET}"
