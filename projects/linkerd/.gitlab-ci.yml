@@ -1,0 +1,60 @@
+stages:
+  - build
+  - release
+
+before_script:
+  - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
+
+compile:
+  image: openjdk:8
+  stage: build
+  # cache:
+  #   paths:
+  #   - docker-17.03.0-ce.tgz
+  #   - node-v6.10.2-linux-x64.tar.xz
+
+  variables:
+    CI_TERRIBLENESS: 30.seconds
+
+  script:
+    - set -x
+    - if [ ! -f docker-17.03.0-ce.tgz ]; then
+          curl -sLO https://get.docker.com/builds/Linux/x86_64/docker-17.03.0-ce.tgz ;
+        fi
+    - tar -xz -C /tmp -f docker-17.03.0-ce.tgz
+    - mv /tmp/docker/* /usr/bin
+    - if [ ! -f node-v6.10.2-linux-x64.tar.xz ]; then
+          curl -sLO https://nodejs.org/dist/v6.10.2/node-v6.10.2-linux-x64.tar.xz ;
+        fi
+    - tar -xf node-v6.10.2-linux-x64.tar.xz
+    - cp -a node-v6.10.2-linux-x64/* /usr/
+    - sh -x ci/update.sh
+    - set -x
+    - echo "Install Node.js and npm dependencies"
+    - pushd $(pwd)/admin/src/main/resources/io/buoyant/admin/ ; npm install ; popd
+    - echo "Run npm tests"
+    - pushd $(pwd)/admin/src/main/resources/io/buoyant/admin/ ;  npm run eslint ; npm test ; popd
+    - echo "Run unit and e2e tests"
+    - sh -x ci/test.sh
+    - set -x ci/coverage-publish.sh || true
+    - echo "Publish"
+    - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
+    - DOCKER_TARGET="dockerBuildAndPush"
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+    - ./sbt "set imageNames in docker in (linkerd, Bundle) += ImageName("registry.staging.cncf.ci/linkerd/linkerd:v"+version.value)" \
+            "set imageNames in docker in (namerd, Bundle) += ImageName("registry.staging.cncf.ci/linkerd/linkerd:v"+version.value)" \
+            "set imageNames in docker in (namerd, Dcos) += ImageName("registry.staging.cncf.ci/linkerd/linkerd:v"+version.value)"
+    - ./sbt "set Base.dockerTag in (linkerd, Bundle) := \"${IMAGE_TAG}\"" "linkerd/bundle:${DOCKER_TARGET}" \
+            "set Base.dockerTag in (namerd, Bundle) := \"${IMAGE_TAG}\"" "namerd/bundle:${DOCKER_TARGET}" \
+            "set Base.dockerTag in (namerd, Dcos) := \"dcos-${IMAGE_TAG}\"" "namerd/dcos:${DOCKER_TARGET}"
+    - touch release.env
+    - echo "registry.cncf.ci/linkerd/linkerd/namerd:-dcos-${IMAGE_TAG}" > release.env
+    - echo "registry.cncf.ci/linkerd/linkerd/namerd:${IMAGE_TAG}" >> release.env
+    - echo "registry.cncf.ci/linkerd/linkerd/linkerd:${IMAGE_TAG}" >> release.env
+    - cat release.env
+
+  artifacts:
+    name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
+    expire_in: 4 weeks
+    paths:
+      - "admin/src/main/resources/io/buoyant/admin/node_modules"
