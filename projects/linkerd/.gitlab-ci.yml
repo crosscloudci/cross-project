@@ -49,6 +49,7 @@ compile:
             'set imageNames in docker in (namerd, Bundle) += ImageName("registry.staging.cncf.ci/linkerd/linkerd:v${CI_COMMIT_REF_SLUG}")' \
             'set imageNames in docker in (namerd, Dcos) += ImageName("registry.staging.cncf.ci/linkerd/linkerd:v${CI_COMMIT_REF_SLUG}")'
     - docker images | grep "linkerd"
+    - sleep 2100000
     - touch release.env
     - echo "registry.cncf.ci/linkerd/linkerd/namerd:-dcos-${IMAGE_TAG}" > release.env
     - echo "registry.cncf.ci/linkerd/linkerd/namerd:${IMAGE_TAG}" >> release.env
