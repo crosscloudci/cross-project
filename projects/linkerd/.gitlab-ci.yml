@@ -63,8 +63,7 @@ container:
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - docker push registry.staging.cncf.ci/linkerd/linkerd/linkerd:"$IMAGE_TAG"
     - docker push registry.staging.cncf.ci/linkerd/linkerd/namerd:"$IMAGE_TAG"
-    - sleep 1000000
-    - docker push registry.staging/cncf.ci/linkerd/linkerd/namerd-dcos:"$IMAGE_TAG"
+    - docker push registry.staging.cncf.ci/linkerd/linkerd/namerd-dcos:"$IMAGE_TAG"
     - touch release.env
     - echo "registry.staging.cncf.ci/linkerd/linkerd/linkerd:${IMAGE_TAG}" >> release.env
     - echo "registry.staging.cncf.ci/linkerd/linkerd/namerd:${IMAGE_TAG}" >> release.env
