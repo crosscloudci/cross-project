@@ -1,6 +1,6 @@
 stages:
   - build
-  - release
+  - package
 
 before_script:
   - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
@@ -54,7 +54,7 @@ compile:
     paths:
       - "admin/src/main/resources/io/buoyant/admin/node_modules"
 
-compile:
+container:
   stage: package
   script:
     - IMAGE_TAG=${CI_COMMIT_SHA_SHORT}
