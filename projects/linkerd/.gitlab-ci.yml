@@ -68,8 +68,8 @@ container:
     - docker push registry.staging.cncf.ci/linkerd/linkerd/namerd:"$IMAGE_TAG"
     - docker push registry.staging.cncf.ci/linkerd/linkerd/namerd-dcos:"$IMAGE_TAG"
     - touch release.env
-    - echo "export IMAGE=registry.staging.cncf.ci/linkerd/linkerd/linkerd" | tee release.env
-    - echo "export TAG=$IMAGE_TAG" | tee release.env
+    - echo export IMAGE=registry.staging.cncf.ci/linkerd/linkerd/linkerd | tee release.env
+    - echo export TAG=$IMAGE_TAG | tee release.env
     # - echo "registry.staging.cncf.ci/linkerd/linkerd/namerd:${IMAGE_TAG}" >> release.env
     # - echo "registry.staging.cncf.ci/linkerd/linkerd/namerd:-dcos-${IMAGE_TAG}" > release.env
     - cat release.env
