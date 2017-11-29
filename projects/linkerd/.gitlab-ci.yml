@@ -61,12 +61,12 @@ container:
     - docker tag registry.staging.cncf.ci/linkerd/linkerd/linkerd:1.3.1 registry.staging.cncf.ci/linkerd/linkerd/linkerd:"$IMAGE_TAG"
     - docker tag registry.staging.cncf.ci/linkerd/linkerd/namerd:1.3.1 registry.staging.cncf.ci/linkerd/linkerd/namerd:"$IMAGE_TAG"
     - docker tag registry.staging.cncf.ci/linkerd/linkerd/namerd-dcos:1.3.1 registry.staging.cncf.ci/linkerd/linkerd/namerd-dcos:"$IMAGE_TAG"
-    - docker push registry.cncf.ci/linkerd/linkerd/linkerd:"$IMAGE_TAG"
-    - docker push registry.cncf.ci/linkerd/linkerd/namerd:"$IMAGE_TAG"
-    - docker push registry.cncf.ci/linkerd/linkerd/namerd-dcos:"$IMAGE_TAG"
+    - docker push registry.staging.cncf.ci/linkerd/linkerd/linkerd:"$IMAGE_TAG"
+    - docker push registry.staging.cncf.ci/linkerd/linkerd/namerd:"$IMAGE_TAG"
+    - docker push registry.staging/cncf.ci/linkerd/linkerd/namerd-dcos:"$IMAGE_TAG"
     - touch release.env
-    - echo "registry.cncf.ci/linkerd/linkerd/linkerd:${IMAGE_TAG}" >> release.env
-    - echo "registry.cncf.ci/linkerd/linkerd/namerd:${IMAGE_TAG}" >> release.env
-    - echo "registry.cncf.ci/linkerd/linkerd/namerd:-dcos-${IMAGE_TAG}" > release.env
+    - echo "registry.staging.cncf.ci/linkerd/linkerd/linkerd:${IMAGE_TAG}" >> release.env
+    - echo "registry.staging.cncf.ci/linkerd/linkerd/namerd:${IMAGE_TAG}" >> release.env
+    - echo "registry.staging.cncf.ci/linkerd/linkerd/namerd:-dcos-${IMAGE_TAG}" > release.env
     - cat release.env
 
