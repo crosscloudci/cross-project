@@ -33,6 +33,7 @@ compile:
 
 container:
   stage: Package
+  image: docker:latest
   script:
     - apt update && apt -y install jq
     # - cat release.env
