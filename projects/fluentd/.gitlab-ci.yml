@@ -1,15 +1,3 @@
-image: "ruby:2.4.1"
-
-# Cache gems in between builds (Disabled)
-# cache:
-#   paths:
-# - vendor/bundle
-
-before_script:
-  - ruby -v                                   # Print out ruby version for debugging
-  - gem install bundler  --no-ri --no-rdoc    # Bundler is not installed with the image
-  - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
-
 stages:
   - Build
   - Package
