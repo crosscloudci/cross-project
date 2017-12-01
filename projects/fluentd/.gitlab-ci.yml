@@ -27,7 +27,7 @@ container:
   stage: Package
   image: docker:latest
   script:
-    - apt update && apt -y install jq
+    - apk update && apk add git
     # - cat release.env
     # - source release.env
     # - echo $FLUENTD_GEM
