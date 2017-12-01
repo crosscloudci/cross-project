@@ -36,6 +36,8 @@ container:
     # - source release.env
     # - echo $FLUENTD_GEM
     - export PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PROJECT_ID}/jobs" | jq '.[] | select(.name=="compile") | .id')
+    - echo PROJECT_JOB
+    - sleep 10000000
     - git clone https://github.com/denverwilliams/fluentd-docker-image.git ./fluentd
     - cd ./fluentd/v0.14/debian ; docker build -t fluentd --no-cache --build-arg FLUENTD_GEM="$BASE_URL/fluent/fluentd/-/jobs/${PROJECT_JOB}/artifacts/raw/fluentd-0.14.14.gem" . ; cd - 
     - cat fluentd.env
