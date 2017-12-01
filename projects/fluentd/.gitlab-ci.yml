@@ -31,12 +31,12 @@ container:
   stage: Package
   image: docker:latest
   script:
-    - apk update && apk add git
+    - apk update && apk add curl jq git
     # - cat release.env
     # - source release.env
     # - echo $FLUENTD_GEM
     - export PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PROJECT_ID}/jobs" | jq '.[] | select(.name=="compile") | .id')
-    - docker build -f v0.14/debian/Dockerfile git@github.com:fluent/fluentd-docker-image.git --build-arg FLUENTD_GEM="$BASE_URL/fluent/fluentd/-/jobs/${PROJECT_JOB}/artifacts/raw/fluentd-0.14.14.gem"
+    - docker build -f v0.14/debian/Dockerfile https://github.com/denverwilliams/fluentd-docker-image.git --build-arg FLUENTD_GEM="$BASE_URL/fluent/fluentd/-/jobs/${PROJECT_JOB}/artifacts/raw/fluentd-0.14.14.gem"
     - cat fluentd.env
 
   artifacts:
