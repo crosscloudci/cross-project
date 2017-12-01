@@ -31,7 +31,7 @@ container:
   stage: Package
   image: docker:latest
   script:
-    - apk update && apk add curl jq git
+    - apk update && apk add curl jq git bash
     # - cat release.env
     # - source release.env
     # - echo $FLUENTD_GEM
