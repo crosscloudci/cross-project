@@ -32,6 +32,7 @@ container:
   image: docker:latest
   script:
     - apk update && apk add curl jq git bash
+    - export SHELL=/bin/bash
     # - cat release.env
     # - source release.env
     # - echo $FLUENTD_GEM
