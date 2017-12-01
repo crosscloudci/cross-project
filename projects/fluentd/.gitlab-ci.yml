@@ -38,7 +38,7 @@ container:
     - export PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq '.[] | select(.name=="compile") | .id')
     - echo "$PROJECT_JOB"
     - git clone https://github.com/denverwilliams/fluentd-docker-image.git ./fluentd
-    - cd ./fluentd/v0.14/debian ; docker build -t "$CI_REGISTRY_IMAGE:CI_COMMIT_SHA" --no-caclhe --build-arg FLUENTD_GEM="$BASE_URL/fluent/fluentd/-/jobs/${PROJECT_JOB}/artifacts/raw/fluentd-0.14.14.gem" . ; cd - 
+    - cd ./fluentd/v0.14/debian ; docker build -t "$CI_REGISTRY_IMAGE:CI_COMMIT_SHA" --no-cache --build-arg FLUENTD_GEM="$BASE_URL/fluent/fluentd/-/jobs/${PROJECT_JOB}/artifacts/raw/fluentd-0.14.14.gem" . ; cd - 
     - echo export IMAGE=$CI_REGISTRY_IMAGE | tee release.env
     - echo export TAG=$CI_COMMIT_SHA | tee -a release.env
     - cat release.env
