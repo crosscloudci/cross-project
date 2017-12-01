@@ -4,6 +4,7 @@ stages:
 
 compile:
   stage: Build
+  image: "ruby:2.4.1"
   script:
     - bundle exec rake build
     - mv pkg/*gem .
