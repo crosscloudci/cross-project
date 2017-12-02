@@ -9,11 +9,10 @@ before_script:
   - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
 
 compile:
-  image: golang:1.8.1
+  image: registry.cncf.ci/cncf/cross-cloud:go
   stage: build
   script:
-    # - patch, bzip2, gawk, patch, zlib1g-dev, libyaml-dev, libsqlite3-dev, sqlite3, autoconf, libgdbm-dev, libncurses5-dev, automake, libtool, bison, libffi-dev, libgmp-dev, libreadline6-dev, libssl-dev
-    # - sleep 10000000
+    - sleep 10000000
     # - source /usr/local/rvm/scripts/rvm ; cd /dashboard && gem install bundle ; cd -
     - ln -s /builds /go/src/github.com
     - cd /go/src/github.com/coredns/coredns
