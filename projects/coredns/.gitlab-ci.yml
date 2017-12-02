@@ -9,7 +9,8 @@ before_script:
   - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
 
 compile:
-  image: golang:1.8.1
+  image: registry.cncf.ci/cncf/cross-cloud:go-ruby 
+  # image: golang:1.8.1
   stage: build
   script:
     - ln -s /builds /go/src/github.com
