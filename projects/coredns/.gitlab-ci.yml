@@ -35,7 +35,7 @@ compile:
 
 container:
   stage: package
-  image: docker:stretch 
+  image: registry.cncf.ci/cncf/cross-cloud:docker 
   script:
     - sleep 10000000
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
