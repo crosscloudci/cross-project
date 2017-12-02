@@ -9,8 +9,7 @@ before_script:
   - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
 
 compile:
-  image: registry.cncf.ci/cncf/cross-cloud:go-ruby 
-  # image: golang:1.8.1
+  image: golang:1.8.1
   stage: build
   script:
     - ln -s /builds /go/src/github.com
@@ -33,7 +32,7 @@ compile:
 
 container:
   stage: package
-  image: registry.cncf.ci/cncf/cross-cloud:docker-ruby 
+  image: docker:latest 
   script:
     - sleep 10000000000
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
