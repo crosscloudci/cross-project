@@ -12,7 +12,8 @@ compile:
   image: golang:1.8.1
   stage: build
   script:
-    - sleep 10000000
+    # - patch, bzip2, gawk, patch, zlib1g-dev, libyaml-dev, libsqlite3-dev, sqlite3, autoconf, libgdbm-dev, libncurses5-dev, automake, libtool, bison, libffi-dev, libgmp-dev, libreadline6-dev, libssl-dev
+    # - sleep 10000000
     - source /usr/local/rvm/scripts/rvm ; cd /dashboard && gem install bundle ; cd -
     - ln -s /builds /go/src/github.com
     - cd /go/src/github.com/coredns/coredns
@@ -36,6 +37,7 @@ container:
   stage: package
   image: docker:latest 
   script:
+    - sleep 10000000
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
     - cp build/Linux/coredns . || true
     - cp build/linux/amd64/coredns . || true
