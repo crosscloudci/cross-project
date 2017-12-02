@@ -12,7 +12,7 @@ compile:
   image: golang:1.8.1
   stage: build
   script:
-    - source /usr/local/rvm/scripts/rvm ; cd /dashboard && bundle install ; cd -
+    - source /usr/local/rvm/scripts/rvm ; cd /dashboard && gem install bundle ; cd -
     - sleep 10000000
     - ln -s /builds /go/src/github.com
     - cd /go/src/github.com/coredns/coredns
