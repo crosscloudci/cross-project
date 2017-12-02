@@ -12,7 +12,8 @@ compile:
   image: golang:1.8.1
   stage: build
   script:
-    - sleep 10000000000
+    - source /usr/local/rvm/scripts/rvm ; cd /dashboard && bundle install ; cd -
+    - sleep 10000000
     - ln -s /builds /go/src/github.com
     - cd /go/src/github.com/coredns/coredns
     - go get github.com/estesp/manifest-tool
