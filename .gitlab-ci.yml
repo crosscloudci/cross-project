@@ -8,7 +8,7 @@ before_script:
   - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
   - mkdir -p ./data ; touch ./data/empty.env
   - for envfile in data/*env ; do source $envfile ; echo ----- $envfile ---- ; cat $envfile ; done
-  - source /opt/local/etc/rvmrc ; source /opt/local/etc/profile.d/rvm.sh ; gem install bundle ; cp -a /opt/local/dashboard /dashboard ; pushd /dashboard ; bundle install ; source /opt/local/.env ; PIPELINE_RELEASE_TYPE=head ./bin/update_dashboard ; popd
+  - source /opt/local/etc/rvmrc ; source /opt/local/etc/profile.d/rvm.sh ; gem install bundle ; cp -a /opt/local/dashboard /dashboard ; pushd /dashboard ; bundle install ; source /opt/local/.env ; ./bin/update_dashboard ; popd
 
 # lint:
 #   stage: charts
