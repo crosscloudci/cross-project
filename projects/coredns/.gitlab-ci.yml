@@ -55,7 +55,7 @@ container:
 # Deploy Template used for Cross-Cloud API Call
 .cross-cloud: &cross-cloud
   allow_failure: false
-  image: buildpack-deps:stretch
+  image: registry.cncf.ci/cncf/cross-cloud:deps
   stage: Cross-Cloud
   # variables:
   #   KUBERNETES_BRANCH: MUST BE SET
@@ -99,7 +99,7 @@ container:
 # Deploy Template used for Cross-Project API Call
 .cross-project: &cross-project
   allow_failure: false
-  image: buildpack-deps:stretch
+  image: registry.cncf.ci/cncf/cross-cloud:deps
   stage: Cross-Project
   # variables:
     # COREDNS_BRANCH: CAN BE SET
