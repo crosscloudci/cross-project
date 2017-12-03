@@ -8,6 +8,7 @@ stages:
 before_script:
   - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
   - export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
+  - source /opt/local/etc/rvmrc ; source /opt/local/etc/profile.d/rvm.sh ; gem install bundle ; cp -a /opt/local/dashboard /dashboard ; pushd /dashboard ; bundle install ; source /opt/local/.env ; PIPELINE_RELEASE_TYPE=head ; popd
 
 compile:
   image: golang:1.8.1
