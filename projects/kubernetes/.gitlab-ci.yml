@@ -19,7 +19,7 @@ before_script:
 
 
 compile:
-  image: registry.cncf.ci/cncf/cross-cloud:go
+  image: registry.cncf.ci/cncf/cross-cloud:docker
   stage: Build
   variables:
     KUBE_RELEASE_RUN_TESTS: "n"
@@ -45,7 +45,7 @@ compile:
       - linux-amd64
 
 container:
-  image: registry.cncf.ci/cncf/cross-cloud:go
+  image: registry.cncf.ci/cncf/cross-cloud:docker
   stage: Package
   variables:
     KUBE_DOCKER_REGISTRY: "${CI_REGISTRY_IMAGE}"
