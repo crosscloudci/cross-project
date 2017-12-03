@@ -193,7 +193,7 @@ before_script:
       - ./data
 
 .cross-project: &cross-project
-  image: registry.cncf.ci/cncf/cross-cloud/provisioning:ci-stable-v0-2-0
+  image: registry.dev.cncf.ci/cncf/cross-cloud/provisioning:stable-v0-2-0-integrations
   stage: Cross-Project
   # variables:
     # KUBECONFIG: MUST BE SET
