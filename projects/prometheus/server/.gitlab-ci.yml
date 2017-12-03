@@ -11,7 +11,7 @@ before_script:
   - source /opt/local/etc/rvmrc ; source /opt/local/etc/profile.d/rvm.sh ; gem install bundle ; cp -a /opt/local/dashboard /dashboard ; pushd /dashboard ; bundle install ; source /opt/local/.env ; PIPELINE_RELEASE_TYPE=head ; popd
 
 compile:
-  image: golang:1.8.1
+  image: registry.cncf.ci/cncf/cross-cloud:go
   stage: Build
   variables:
     CGO_ENABLED: '0'
@@ -37,7 +37,7 @@ compile:
 
 container:
   stage: Package
-  image: docker:latest
+  image: registry.cncf.ci/cncf/cross-cloud:docker 
   script:
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
     - cd /builds/prometheus/prometheus

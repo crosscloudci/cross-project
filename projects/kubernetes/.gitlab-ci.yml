@@ -1,4 +1,3 @@
-image: docker:17.05.0
 stages:
   - Build
   - Package
@@ -20,6 +19,7 @@ before_script:
 
 
 compile:
+  image: registry.cncf.ci/cncf/cross-cloud:go
   stage: Build
   variables:
     KUBE_RELEASE_RUN_TESTS: "n"
@@ -29,8 +29,8 @@ compile:
     KUBE_DOCKER_REGISTRY: "${CI_REGISTRY_IMAGE}"
     KUBE_DOCKER_IMAGE_TAG: "${CI_COMMIT_REF_SLUG}.${CI_PIPELINE_ID}.${CI_COMMIT_SHA}"
   script:
-    - apk update
-    - apk add bash tar rsync git curl make file
+    - apt update
+    - apt install -y tar rsync git curl make file
     - echo "${KUBE_DOCKER_IMAGE_TAG}"
     - ./build/release.sh
     - cp -a _output/dockerized/bin/linux/amd64 linux-amd64
@@ -45,6 +45,7 @@ compile:
       - linux-amd64
 
 container:
+  image: registry.cncf.ci/cncf/cross-cloud:go
   stage: Package
   variables:
     KUBE_DOCKER_REGISTRY: "${CI_REGISTRY_IMAGE}"
