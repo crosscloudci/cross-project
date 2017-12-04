@@ -95,7 +95,7 @@ container:
         exit 0
       else
         apt update && apt install -y jq
-        PROJECT_PIPELINE=$(curl -X POST -F token=$CROSS_CLOUD_CI_JOB_TOKEN -F ref=stable-v0.2.0-integrations -F "variables[BRANCH]="${CLOUD_BRANCH}"" -F "variables[COMMIT]="${CLOUD_COMMIT}"" -F "variables[SOURCE]="${CI_PIPELINE_ID}"" -F "variables[DISABLE_SOURCE]="${CLOUD_DISABLE_SOURCE}"" -F "variables[ORG]=kubernetes" -F "variables[PROJECT]=kubernetes" -F "variables[PROJECT_ID]=14" -F "variables[PROJECT_TOKEN]="${KUBERNETES_PROJECT_TOKEN}"" -F "variables[CLOUD]="${CLOUD}"" "$BASE_URL"/api/v4/projects/2/trigger/pipeline | jq '.id')
+        PROJECT_PIPELINE=$(curl -X POST -F token=$CROSS_CLOUD_CI_JOB_TOKEN -F ref=stable-v0.2.0-integrations -F "variables[BRANCH]="${CLOUD_BRANCH}"" -F "variables[COMMIT]="${CLOUD_COMMIT}"" -F "variables[SOURCE]="${CI_PIPELINE_ID}"" -F "variables[DISABLE_SOURCE]="${CLOUD_DISABLE_SOURCE}"" -F "variables[ORG]=kubernetes" -F "variables[PROJECT]=kubernetes" -F "variables[PROJECT_ID]=14" -F "variables[PROJECT_TOKEN]="${KUBERNETES_PROJECT_TOKEN}"" -F "variables[CLOUD]="${CLOUD}"" -F "variables[TARGET_PROJECT_NAME]="${CI_PROJECT_NAME}"" -F "variables[PROJECT_BUILD_PIPELINE_ID]="${CI_PIPELINE_ID}"" "$BASE_URL"/api/v4/projects/2/trigger/pipeline | jq '.id')
         # PROJECT_PIPELINE=$(curl -X POST -F token=$CI_JOB_TOKEN -F ref=stable-v0.2.0-integrations https://gitlab.cncf.ci/api/v4/projects/2/trigger/pipeline | jq '.id')
 
         echo 'Wait for Cluster "FIX ME / HACK"'
