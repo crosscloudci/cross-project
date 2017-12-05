@@ -22,7 +22,6 @@ compile:
     CI_TERRIBLENESS: 30.seconds
 
   script:
-    - echo "$CI_REGISTRY_IMAGE"
     - set -x
     - if [ ! -f docker-17.03.0-ce.tgz ]; then
           curl -sLO https://get.docker.com/builds/Linux/x86_64/docker-17.03.0-ce.tgz ;
@@ -49,9 +48,9 @@ compile:
     # - ./sbt "set Base.dockerTag in (linkerd, Bundle) := \"${IMAGE_TAG}\"" "linkerd/bundle:${DOCKER_TARGET}" \
             # "set Base.dockerTag in (namerd, Bundle) := \"${IMAGE_TAG}\"" "namerd/bundle:${DOCKER_TARGET}" \
             # "set Base.dockerTag in (namerd, Dcos) := \"dcos-${IMAGE_TAG}\"" "namerd/dcos:${DOCKER_TARGET}"
-    - ./sbt 'set imageNames in docker in (linkerd, Bundle) += ImageName("registry.dev.cncf.ci/linkerd/linkerd/linkerd:1.3.1")' \ "linkerd/docker"
-    - ./sbt 'set imageNames in docker in (namerd, Bundle) += ImageName("registry.dev.cncf.ci/linkerd/linkerd/namerd:1.3.1")' \ "namerd/docker"
-    - ./sbt 'set imageNames in docker in (namerd, Dcos) += ImageName("registry.dev.cncf.ci/linkerd/linkerd/namerd-dcos:1.3.1")' \ "namerd/dcos:docker"
+    - ./sbt 'set imageNames in docker in (linkerd, Bundle) += ImageName("registry.cncf.ci/linkerd/linkerd/linkerd:1.3.1")' \ "linkerd/docker"
+    - ./sbt 'set imageNames in docker in (namerd, Bundle) += ImageName("registry.cncf.ci/linkerd/linkerd/namerd:1.3.1")' \ "namerd/docker"
+    - ./sbt 'set imageNames in docker in (namerd, Dcos) += ImageName("registry.cncf.ci/linkerd/linkerd/namerd-dcos:1.3.1")' \ "namerd/dcos:docker"
 
   artifacts:
     name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
@@ -64,16 +63,16 @@ container:
   image: registry.cncf.ci/cncf/cross-cloud:docker
   script:
     - IMAGE_TAG=${CI_COMMIT_SHA_SHORT}
-    - docker tag registry.dev.cncf.ci/linkerd/linkerd/linkerd:1.3.1 registry.dev.cncf.ci/linkerd/linkerd/linkerd:"$IMAGE_TAG"
-    - docker tag registry.dev.cncf.ci/linkerd/linkerd/namerd:1.3.1 registry.dev.cncf.ci/linkerd/linkerd/namerd:"$IMAGE_TAG"
-    - docker tag registry.dev.cncf.ci/linkerd/linkerd/namerd-dcos:1.3.1 registry.dev.cncf.ci/linkerd/linkerd/namerd-dcos:"$IMAGE_TAG"
+    - docker tag registry.cncf.ci/linkerd/linkerd/linkerd:1.3.1 "$CI_REGISTRY_IMAGE"/linkerd:"$IMAGE_TAG"
+    - docker tag registry.cncf.ci/linkerd/linkerd/namerd:1.3.1 "$CI_REGISTRY_IMAGE"/namerd:"$IMAGE_TAG"
+    - docker tag registry.cncf.ci/linkerd/linkerd/namerd-dcos:1.3.1 "$CI_REGISTRY_IMAGE"/namerd-dcos:"$IMAGE_TAG"
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
-    - docker push registry.dev.cncf.ci/linkerd/linkerd/linkerd:"$IMAGE_TAG"
-    - docker push registry.dev.cncf.ci/linkerd/linkerd/namerd:"$IMAGE_TAG"
-    - docker push registry.dev.cncf.ci/linkerd/linkerd/namerd-dcos:"$IMAGE_TAG"
+    - docker push "$CI_REGISTRY_IMAGE"/linkerd:"$IMAGE_TAG"
+    - docker push "$CI_REGISTRY_IMAGE"/namerd:"$IMAGE_TAG"
+    - docker push "$CI_REGISTRY_IMAGE"/namerd-dcos:"$IMAGE_TAG"
     - touch release.env
-    - echo export IMAGE=registry.dev.cncf.ci/linkerd/linkerd/linkerd:$IMAGE_TAG | tee release.env
-    - echo export TAG=$IMAGE_TAG | tee -a release.env
+    - echo export IMAGE="$CI_REGISTRY_IMAGE"/linkerd:"$IMAGE_TAG" | tee release.env
+    - echo export TAG="$IMAGE_TAG" | tee -a release.env
     # - echo "registry.staging.cncf.ci/linkerd/linkerd/namerd:${IMAGE_TAG}" >> release.env
     # - echo "registry.staging.cncf.ci/linkerd/linkerd/namerd:-dcos-${IMAGE_TAG}" > release.env
     - cat release.env
