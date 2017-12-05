@@ -2,7 +2,7 @@ stages:
   # - charts
   - Artifacts
   - Cross-Project
-  - End-to-End
+  # - End-to-End
 
 before_script:
   - export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
@@ -228,11 +228,11 @@ before_script:
     paths:
       - ./data
 
- e2e:
-  image: registry.cncf.ci/cncf/cross-cloud:go
-  stage: End-to-End
-  script:
-    - echo 'test'
+ # e2e:
+ #  image: registry.cncf.ci/cncf/cross-cloud:go
+ #  stage: End-to-End
+ #  script:
+ #    - echo 'test'
 
 # Build-Source VARs
 Build-Source:
