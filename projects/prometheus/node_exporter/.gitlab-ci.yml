@@ -62,7 +62,7 @@ container:
 
         echo 'Wait for Cluster "FIX ME / HACK"'
         until [ "$JOB_STATUS" == '"success"' ]; do
-            JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs" | jq '.[] | select(.name=="Kubernetes-Deploy") | .status')"
+            JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs" | jq '.[] | select(.name=="Provisioning") | .status')"
               sleep 0.5
               if [ "$JOB_STATUS" == '"failed"' ]; then
                   exit 1
@@ -74,7 +74,7 @@ container:
           done
           echo 'Cluster Ready'
 
-        PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="Kubernetes-Deploy") | .id')
+        PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/2/pipelines/${PROJECT_PIPELINE}/jobs?scope=success" | jq '.[] | select(.name=="Provisioning") | .id')
 
         export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
         curl -s -o kubeconfig -L "$BASE_URL/cncf/cross-cloud/-/jobs/${PROJECT_JOB}/artifacts/raw/data/$CLOUD/kubeconfig"
@@ -110,7 +110,7 @@ container:
 
         echo 'Verify Project Deployment'
         until [ "$JOB_STATUS" == '"success"' ]; do
-            JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/45/pipelines/${PROJECT_PIPELINE}/jobs" | jq '.[] | select(.name=="Cross-Project") | .status')"
+            JOB_STATUS="$(curl -s --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/45/pipelines/${PROJECT_PIPELINE}/jobs" | jq '.[] | select(.name=="App-Deploy") | .status')"
             sleep 0.5
             if [ "$JOB_STATUS" == '"failed"' ]; then
                 exit 1
