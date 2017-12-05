@@ -106,6 +106,8 @@ container:
                 exit 1
             elif [ "$JOB_STATUS" == '"canceled"' ]; then
                 exit 1
+            elif [ "$JOB_STATUS" == '"skipped"' ]; then
+                exit 1
             else
                 continue
             fi
