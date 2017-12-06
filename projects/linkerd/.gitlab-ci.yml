@@ -40,8 +40,8 @@ compile:
     - echo "Run npm tests"
     - pushd $(pwd)/admin/src/main/resources/io/buoyant/admin/ ;  npm run eslint ; npm test ; popd 
     - echo "Run unit and e2e tests"
-    - sh -x ci/test.sh 
-    - set -x ci/coverage-publish.sh || true
+    # - sh -x ci/test.sh 
+    # - set -x ci/coverage-publish.sh || true
     - echo "Publish"
     # - DOCKER_TARGET="dockerBuildAndPush"
     - DOCKER_TARGET="docker"
