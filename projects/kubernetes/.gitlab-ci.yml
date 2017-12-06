@@ -1,7 +1,8 @@
 stages:
   - Build
   - Package
-  - Cross-Cloud
+  # - Cross-Cloud
+  - Update-Dashboard
 
 before_script:
   - echo "We are only going to build for amd64 for this demo"
@@ -137,6 +138,11 @@ container:
     paths:
       - kubeconfig
 
+Dashboard:
+  image: registry.cncf.ci/cncf/cross-cloud:go
+  stage: Update-Dashboard
+  script:
+    - echo 'test'
 
-Cross-Cloud:
-  <<: *cross-cloud
+# Cross-Cloud:
+#   <<: *cross-cloud
