@@ -3,6 +3,7 @@ stages:
   - Artifacts
   - Cross-Project
   - End-to-End
+  - Dashboard-Update
 
 before_script:
   - export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
@@ -233,6 +234,13 @@ e2e:
   stage: End-to-End
   script:
     - echo 'test'
+
+Dashboard:
+  image: registry.cncf.ci/cncf/cross-cloud:go
+  stage: Dashboard-Update
+  script:
+    - echo 'test'
+
 
 # Build-Source VARs
 Build-Source:
