@@ -38,7 +38,7 @@ compile:
     - >
       if [ "$CI_COMMIT_REF_NAME" == "v1.8.1" ]; then
         echo export KUBELET_ARTIFACT=https://storage.googleapis.com/kubernetes-release/release/v1.8.1/bin/linux/amd64/kubelet >> release.env
-      elif [ "$CI_COMMIT_REF_NAME" == "master"]; then
+      elif [ "$CI_COMMIT_REF_NAME" == "master" ]; then
         echo export KUBELET_ARTIFACT=https://storage.googleapis.com/kubernetes-release/release/v1.9.0-beta.1/bin/linux/amd64/kubelet >> release.env
       else
         echo export KUBELET_ARTIFACT="$BASE_URL"/kubernetes/kubernetes/-/jobs/${CI_JOB_ID}/artifacts/raw/linux-amd64/kubelet >> release.env
