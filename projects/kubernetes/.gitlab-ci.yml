@@ -27,7 +27,7 @@ before_script:
 
 
 compile:
-  image: registry.cncf.ci/cncf/cross-cloud:docker
+  image: crosscloudci/debian-docker
   stage: Build
   variables:
     KUBE_RELEASE_RUN_TESTS: "n"
@@ -61,7 +61,7 @@ compile:
       - linux-amd64
 
 container:
-  image: registry.cncf.ci/cncf/cross-cloud:docker
+  image: crosscloudci/debian-docker
   stage: Package
   variables:
     KUBE_DOCKER_REGISTRY: "${CI_REGISTRY_IMAGE}"

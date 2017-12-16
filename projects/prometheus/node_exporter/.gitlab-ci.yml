@@ -17,7 +17,7 @@ before_script:
   - source /opt/local/etc/rvmrc ; source /opt/local/etc/profile.d/rvm.sh ; cp -a /opt/local/dashboard /dashboard ; pushd /dashboard ; source /opt/local/.env ; ./bin/update_dashboard ; popd
 
 compile:
-  image: golang:1.8.1
+  image: crosscloudci/debian-docker
   stage: Build
   script:
     - ls -lah
@@ -31,7 +31,7 @@ compile:
 
 container:
   stage: Package
-  image: docker:17.05.0
+  image: crosscloudci/debian-docker
   script:
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
     - cd /builds/prometheus/node_exporter

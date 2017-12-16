@@ -17,7 +17,7 @@ before_script:
   - source /opt/local/etc/rvmrc ; source /opt/local/etc/profile.d/rvm.sh ; cp -a /opt/local/dashboard /dashboard ; pushd /dashboard ; source /opt/local/.env ; ./bin/update_dashboard ; popd
 
 compile:
-  image: registry.cncf.ci/cncf/cross-cloud:openjdk8
+  image: crosscloudci/debian-openjdk
   stage: build
   # cache:
   #   paths:
@@ -66,7 +66,7 @@ compile:
 
 container:
   stage: package
-  image: registry.cncf.ci/cncf/cross-cloud:docker
+  image: crosscloudci/debian-docker
   script:
     - IMAGE_TAG=${CI_COMMIT_SHA_SHORT}
     - docker tag registry.cncf.ci/linkerd/linkerd/linkerd:1.3.1 "$CI_REGISTRY_IMAGE"/linkerd:"$IMAGE_TAG"

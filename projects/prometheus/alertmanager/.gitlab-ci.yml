@@ -18,7 +18,7 @@ before_script:
 
 
 compile:
-  image: registry.cncf.ci/cncf/cross-cloud:go
+  image: crosscloudci/debian-go
   stage: Build
   script:
     - ls -lah
@@ -32,7 +32,7 @@ compile:
 
 container:
   stage: Package
-  image: registry.cncf.ci/cncf/cross-cloud:docker 
+  image: crosscloudci/debian-docker
   script:
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
     - cd /builds/prometheus/alertmanager
