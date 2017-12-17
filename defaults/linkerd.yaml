@@ -79,9 +79,9 @@ kubectl:
 
 prometheus:
   # Enable Prometheus service metrics
-  scrape: true
+  scrape: false
   # Enable Prometheus endpoint metrics
-  probe: true
+  probe: false
   # Path for Prometheus metrics
   path: /admin/metrics/prometheus
 service:

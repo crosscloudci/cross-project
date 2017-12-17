@@ -17,6 +17,12 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+rbac:
+  # If true, create & use RBAC resources
+  create: false
+  # Ignored if rbac.create is true
+  serviceAccountName: default
+
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
 
@@ -32,17 +38,17 @@ serviceProtocol: "UDPNTCP"
 middleware:
   kubernetes:
     enabled: true
-    clusterCidr: "10.3.0.0/24"
+    clusterCidr: "100.64.0.0/13"
     clusterDomain: "cluster.local"
     clusterIP:
   prometheus:
-    enabled: true
+    enabled: false
     port: "9153"
   errors:
-    enabled: true
+    enabled: false
     file: "stderr"
   log:
-    enabled: false
+    enabled: true
     file: "stdout"
   health:
     enabled: true
@@ -50,8 +56,6 @@ middleware:
     enabled: true
   cache:
     enabled: true
-  test:
-    enabled: false
   loadbalance:
     enabled: true
     policy: "round_robin"
