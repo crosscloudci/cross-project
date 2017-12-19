@@ -84,13 +84,13 @@ before_script:
     - env | grep IMAGE
     - env | grep TAG
     - helm init
-    - echo Removing any previous deploys of "${NAME}"
-    - helm ls --all "${NAME}" > /dev/null && helm delete --purge "${NAME}" || true
+    - echo Removing any previous deploys of "${DEPLOYMENT_NAME}"
+    - helm ls --all "${DEPLOYMENT_NAME}" > /dev/null && helm delete --purge "${DEPLOYMENT_NAME}" || true
     - kubectl get svc -l "${LABEL_ARGS}"
     - kubectl get pods -l "${LABEL_ARGS}"
     - helm repo add cncf http://cncf.gitlab.io/stable
-    - helm install -f defaults/"${PROJECT}".yaml
-         --name "${NAME}"
+    - helm install -f defaults/"${TARGET_PROJECT_NAME}".yaml
+         --name "${DEPLOYMENT_NAME}"
          --set "${IMAGE_ARGS}"="${IMAGE}"
          --set "${TAG_ARGS}"="${TAG}"
          "${CHART_REPO}"/"${CHART}"
