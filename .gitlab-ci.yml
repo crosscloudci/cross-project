@@ -105,13 +105,13 @@ before_script:
       - ./data
 
 e2e:
-  image: registry.cncf.ci/cncf/cross-cloud:go
+  image: crosscloudci/debian-go
   stage: End-to-End
   script:
     - echo 'test'
 
 Dashboard:
-  image: registry.cncf.ci/cncf/cross-cloud:go
+  image: crosscloudci/debian-go
   stage: Dashboard-Update
   script:
     - echo 'test'
