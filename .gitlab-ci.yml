@@ -89,11 +89,10 @@ before_script:
     - kubectl get svc -l "${LABEL_ARGS}"
     - kubectl get pods -l "${LABEL_ARGS}"
     - helm repo add cncf http://cncf.gitlab.io/stable
-    - echo "helm install -f defaults/"${TARGET_PROJECT_NAME}".yaml
+    - helm install -f defaults/"${TARGET_PROJECT_NAME}".yaml
          --name "${DEPLOYMENT_NAME}"
          --set "${IMAGE_ARGS}"="${IMAGE}"
-         --set "${TAG_ARGS}"="${TAG}"
-         "${CHART_REPO}"/"${CHART}""
+         "${CHART_REPO}"/"${CHART}"
     - DEPLOYED_IMAGE=$(kubectl get pods -l "${LABEL_ARGS}" -o jsonpath={"${FILTER}"})
     - echo Deployed Image - $DEPLOYED_IMAGE
     - kubectl get svc -l "${LABEL_ARGS}"
