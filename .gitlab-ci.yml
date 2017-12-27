@@ -91,7 +91,8 @@ before_script:
     - helm repo add cncf http://cncf.gitlab.io/stable
     - helm install -f defaults/"${TARGET_PROJECT_NAME}".yaml
          --name "${DEPLOYMENT_NAME}"
-         --set "${IMAGE_ARGS}"="${IMAGE}"
+         "${IMAGE_ARGS}"
+         "${TAG_ARGS}"
          "${CHART_REPO}"/"${CHART}"
     # - DEPLOYED_IMAGE=$(kubectl get pods -l "${LABEL_ARGS}" -o jsonpath={"${FILTER}"})
     # - echo Deployed Image - $DEPLOYED_IMAGE
