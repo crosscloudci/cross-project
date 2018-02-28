@@ -66,13 +66,20 @@ before_script:
     - helm init
     - echo Removing any previous deploys of "${DEPLOYMENT_NAME}"
     - helm ls --all "${DEPLOYMENT_NAME}" > /dev/null && helm delete --purge "${DEPLOYMENT_NAME}" || true
-    - echo Adding onap secret to cluster
-    - kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-mso
+    - >
+      if [ "$CI_PROJECT_NAME" == so ]; then
+         echo "Adding onap secret to cluster"
+         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-mso
+         export NAMESPACE="onap-mso"
+      else
+        echo "skipping onap configuration"
+      fi
     - helm repo add cncf http://cncf.gitlab.io/stable
     - helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
     - helm repo add onap-amsterdam  http://cncf.gitlab.io/onap-amsterdam
     - helm repo add onap-master  http://cncf.gitlab.io/onap-master 
     - helm install -f defaults/"${TARGET_PROJECT_NAME}".yaml
+         --namespace "${NAMESPACE}"
          --name "${DEPLOYMENT_NAME}"
          $IMAGE_ARGS
          $TAG_ARGS
