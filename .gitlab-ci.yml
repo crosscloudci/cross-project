@@ -54,9 +54,9 @@ before_script:
     # KUBECONFIG: MUST BE SET
     # CLOUD: MUST BE SET
   script:
-    - helm init || true
-    - pushd $(pwd)/charts ; make all ; popd
-    - helm repo list
+    #- helm init || true
+    #- pushd $(pwd)/charts ; make all ; popd
+    #- helm repo list
     - echo "$KUBECONFIG" | base64 -d | tee ./kubeconfig
     - export KUBECONFIG=./kubeconfig
     - kubectl get nodes
