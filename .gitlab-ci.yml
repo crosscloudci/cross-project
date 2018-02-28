@@ -1,5 +1,4 @@
 stages:
-  # - charts
   - Artifacts
   - Cross-Project
   - End-to-End
@@ -18,29 +17,6 @@ before_script:
     fi
   - source /opt/local/etc/rvmrc ; source /opt/local/etc/profile.d/rvm.sh ; cp -a /opt/local/dashboard /dashboard ; pushd /dashboard ; source /opt/local/.env ; ./bin/update_dashboard ; popd
 
-# lint:
-#   stage: charts
-#   script:
-#     - helm lint charts/*
-
-# publish-charts:
-#   stage: charts
-#   script:
-#     - helm repo add charts.gitlab.io https://charts.gitlab.io/ #Add Upstream Gitlab.io for kubernetes-gitlab-demo
-#     - helm lint stable/* || true
-#     - for chart in stable/*; do helm dep up $chart; done
-#     - mkdir -p public/stable/
-#     - (cd public/stable; helm package ../../stable/*)
-#     - helm repo index public/stable --url https://cncf.gitlab.io/stable
-#     - helm lint demo/*
-#     - for chart in demo/*; do helm dep up $chart; done
-#     - mkdir -p public/demo/
-#     - (cd public/demo; helm package ../../demo/*)
-#     - helm repo index public/demo --url https://cncf.gitlab.io/demo
-#     - find public
-#   artifacts:
-#     paths:
-#     - public
 
 .build_source: &build_source
   image: buildpack-deps:stretch
@@ -71,12 +47,16 @@ before_script:
       - ./data
 
 .cross-project: &cross-project
-  image: registry.cncf.ci/cncf/cross-cloud/provisioning:production
+  #image: registry.cncf.ci/cncf/cross-cloud/provisioning:production
+  image: crosscloudci/debian-helm:v2.7.2
   stage: Cross-Project
   # variables:
     # KUBECONFIG: MUST BE SET
     # CLOUD: MUST BE SET
   script:
+    - helm init || true
+    - pushd $(pwd)/charts ; make all ; popd
+    - helm repo list
     - echo "$KUBECONFIG" | base64 -d | tee ./kubeconfig
     - export KUBECONFIG=./kubeconfig
     - kubectl get nodes
