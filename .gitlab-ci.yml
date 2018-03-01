@@ -69,6 +69,7 @@ before_script:
     - >
       if [ "$TARGET_PROJECT_NAME" == so ]; then
          echo "Adding onap secret to cluster"
+         kubectl create namespace onap-mso
          kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-mso
          export NAMESPACE="onap-mso"
       else
