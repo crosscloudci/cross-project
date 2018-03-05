@@ -134,11 +134,12 @@ e2e:
     - export KUBECONFIG=./kubeconfig
     - >
       if [ "$TARGET_PROJECT_NAME" == so ]; then
-      echo "wait for all pods up for 15-22 min"
+      ls -al
       ./cd.sh
       else
-       echo 'skipped'
+        echo "skipping onap configuration"
       fi
+
 
 Dashboard:
   image: crosscloudci/debian-go
