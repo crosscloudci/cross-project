@@ -85,6 +85,7 @@ before_script:
          kubectl delete clusterrolebinding onap-log-admin-binding || true
          kubectl delete clusterrolebinding onap-mso-admin-binding || true
          kubectl delete clusterrolebinding onap-robot-admin-binding || true
+         sleep 10
 
          echo "Create project namespaces"
          kubectl create namespace onap
