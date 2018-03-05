@@ -134,21 +134,7 @@ e2e:
     - >
       if [ "$TARGET_PROJECT_NAME" == so ]; then
       echo "wait for all pods up for 15-22 min"
-      FAILED_PODS_LIMIT=0
-      MAX_WAIT_PERIODS=90 # 22 MIN
-      COUNTER=0
-      while [  $(kubectl get pods --namespace=onap-mso | grep 0/ | wc -l) -gt $FAILED_PODS_LIMIT ]; do
-        PENDING=$(kubectl get pods --namespace=onap-mso | grep 0/ | wc -l)
-        sleep 15
-        LIST_PENDING=$(kubectl get pods --namespace=onap-mso | grep 0/ )
-        echo "${LIST_PENDING}"
-        echo "${PENDING} pending > ${FAILED_PODS_LIMIT} at the ${COUNTER}th 15 sec interval"
-        COUNTER=$((COUNTER + 1 ))
-        MAX_WAIT_PERIODS=$((MAX_WAIT_PERIODS - 1))
-        if [ "$MAX_WAIT_PERIODS" -eq 0 ]; then
-        FAILED_PODS_LIMIT=120 
-        fi
-      done
+      ./cd.sh
       else
        echo 'skipped'
       fi
