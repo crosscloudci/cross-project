@@ -54,7 +54,7 @@
   fi
 
   echo "check filebeat 2/2 count for ELK stack logging consumption"
-  FILEBEAT=$(kubectl get pods --all-namespaces -a | grep 2/)
+  FILEBEAT=$(kubectl get pods --namespace=onap-mso -a | grep 2/)
   echo "${FILEBEAT}"
   echo "sleep 4 min - to allow rest frameworks to finish"
   sleep 240
