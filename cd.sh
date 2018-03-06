@@ -62,8 +62,9 @@
 
   # OOM-484 - robot scripts moved
   helm repo add onap-amsterdam  http://cncf.gitlab.io/onap-amsterdam
-  helm repo fetch onap-amsterdam/robot
+  helm fetch onap-amsterdam/robot
   tar -xvf robot-*.tgz
+  cd robot
 
   echo "run healthcheck prep 1"
   ./ete-k8s.sh health > ~/health1.out
