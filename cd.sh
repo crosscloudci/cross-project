@@ -25,7 +25,7 @@
 
   echo "wait for all pods up for 15-22 min"
   FAILED_PODS_LIMIT=0
-  MAX_WAIT_PERIODS=90 # 22 MIN
+  MAX_WAIT_PERIODS=120 # 22 MIN
   COUNTER=0
   while [  $(kubectl get pods --all-namespaces | grep 0/ | wc -l) -gt $FAILED_PODS_LIMIT ]; do
     PENDING=$(kubectl get pods --all-namespaces | grep 0/ | wc -l)
@@ -36,7 +36,7 @@
     COUNTER=$((COUNTER + 1 ))
     MAX_WAIT_PERIODS=$((MAX_WAIT_PERIODS - 1))
     if [ "$MAX_WAIT_PERIODS" -eq 0 ]; then
-      FAILED_PODS_LIMIT=120 
+      FAILED_PODS_LIMIT=140
     fi
   done
   
@@ -61,6 +61,7 @@
   echo "run healthcheck 3 times to warm caches and frameworks so rest endpoints report properly - see OOM-447"
 
   # OOM-484 - robot scripts moved
+  helm repo add onap-amsterdam  http://cncf.gitlab.io/onap-amsterdam
   helm repo fetch onap-amsterdam/robot
   tar -xvf robot-*.tgz
 
