@@ -134,8 +134,8 @@ e2e:
     - export KUBECONFIG=./kubeconfig
     - >
       if [ "$TARGET_PROJECT_NAME" == so ]; then
-      ls -al
-      ./cd.sh
+         ls -al
+         ./cd.sh
       else
         echo "skipping onap configuration"
       fi
