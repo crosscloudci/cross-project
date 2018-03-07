@@ -98,9 +98,9 @@ before_script:
          kubectl create clusterrolebinding onap-robot-admin-binding --clusterrole=cluster-admin --serviceaccount=onap-robot:default || true
          
          echo "Create Config/Log/Robot"
-         helm install --name onap-config --namespace=onap onap-amsterdam/config
-         helm install --name onap-log --namespace=onap-log onap-amsterdam/log
-         helm install --name onap-robot --namespace=onap-robot onap-amsterdam/robot
+         helm upgrade --install --force --name onap-config --namespace=onap onap-amsterdam/config
+         helm upgrade --install --force --name onap-log --namespace=onap-log onap-amsterdam/log
+         helm upgrade --install --force --name onap-robot --namespace=onap-robot onap-amsterdam/robot
          export NAMESPACE="onap-mso"
       else
         echo "skipping onap configuration"
