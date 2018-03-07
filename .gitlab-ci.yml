@@ -77,33 +77,25 @@ before_script:
          helm delete --purge onap-config || true
          helm delete --purge onap-log || true
          helm delete --purge onap-robot || true
-         kubectl delete namespace onap || true
-         kubectl delete namespace onap-log || true
-         kubectl delete namespace onap-mso || true
-         kubectl delete namespace onap-robot || true
-         kubectl delete clusterrolebinding onap-config-admin-binding || true
-         kubectl delete clusterrolebinding onap-log-admin-binding || true
-         kubectl delete clusterrolebinding onap-mso-admin-binding || true
-         kubectl delete clusterrolebinding onap-robot-admin-binding || true
          sleep 10
 
          echo "Create project namespaces"
-         kubectl create namespace onap
-         kubectl create namespace onap-log
-         kubectl create namespace onap-mso
-         kubectl create namespace onap-robot
+         kubectl create namespace onap || true
+         kubectl create namespace onap-log || true
+         kubectl create namespace onap-mso || true
+         kubectl create namespace onap-robot || true
 
          echo "Adding onap secret to cluster"
-         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap
-         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-log
-         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-mso
-         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-robot
+         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap || true
+         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-log || true
+         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-mso || true
+         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-robot || true
          
          echo "Add clusterrolebinding"
-         kubectl create clusterrolebinding onap-config-admin-binding --clusterrole=cluster-admin --serviceaccount=onap:default
-         kubectl create clusterrolebinding onap-log-admin-binding --clusterrole=cluster-admin --serviceaccount=onap-log:default
-         kubectl create clusterrolebinding onap-mso-admin-binding --clusterrole=cluster-admin --serviceaccount=onap-mso:default
-         kubectl create clusterrolebinding onap-robot-admin-binding --clusterrole=cluster-admin --serviceaccount=onap-robot:default
+         kubectl create clusterrolebinding onap-config-admin-binding --clusterrole=cluster-admin --serviceaccount=onap:default || true
+         kubectl create clusterrolebinding onap-log-admin-binding --clusterrole=cluster-admin --serviceaccount=onap-log:default || true
+         kubectl create clusterrolebinding onap-mso-admin-binding --clusterrole=cluster-admin --serviceaccount=onap-mso:default || true
+         kubectl create clusterrolebinding onap-robot-admin-binding --clusterrole=cluster-admin --serviceaccount=onap-robot:default || true
          
          echo "Create Config/Log/Robot"
          helm install --name onap-config --namespace=onap onap-amsterdam/config
