@@ -62,6 +62,8 @@
 
   # OOM-484 - robot scripts moved
   helm repo add onap-amsterdam  http://cncf.gitlab.io/onap-amsterdam
+  helm repo update
+  helm repo list
   helm fetch onap-amsterdam/robot
   tar -xvf robot-*.tgz
   cd robot
