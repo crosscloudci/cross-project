@@ -61,9 +61,8 @@
   echo "run healthcheck 3 times to warm caches and frameworks so rest endpoints report properly - see OOM-447"
 
   # OOM-484 - robot scripts moved
+  helm init --service-account tiller
   helm repo add onap-amsterdam  http://cncf.gitlab.io/onap-amsterdam
-  helm repo update
-  helm repo list
   helm fetch onap-amsterdam/robot
   tar -xvf robot-*.tgz
   cd robot
