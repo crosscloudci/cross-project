@@ -73,11 +73,11 @@ before_script:
     - >
       if [ "$TARGET_PROJECT_NAME" == so ]; then
 
-         echo "Remove old deploys"
-         helm delete --purge onap-config || true
-         helm delete --purge onap-log || true
-         helm delete --purge onap-robot || true
-         sleep 10
+         # echo "Remove old deploys"
+         # helm delete --purge onap-config || true
+         # helm delete --purge onap-log || true
+         # helm delete --purge onap-robot || true
+         # sleep 10
 
          echo "Create project namespaces"
          kubectl create namespace onap || true
