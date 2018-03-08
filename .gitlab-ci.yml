@@ -1,5 +1,4 @@
 stages:
-  # - charts
   - Artifacts
   - Cross-Project
   - End-to-End
@@ -18,29 +17,6 @@ before_script:
     fi
   - source /opt/local/etc/rvmrc ; source /opt/local/etc/profile.d/rvm.sh ; cp -a /opt/local/dashboard /dashboard ; pushd /dashboard ; source /opt/local/.env ; ./bin/update_dashboard ; popd
 
-# lint:
-#   stage: charts
-#   script:
-#     - helm lint charts/*
-
-# publish-charts:
-#   stage: charts
-#   script:
-#     - helm repo add charts.gitlab.io https://charts.gitlab.io/ #Add Upstream Gitlab.io for kubernetes-gitlab-demo
-#     - helm lint stable/* || true
-#     - for chart in stable/*; do helm dep up $chart; done
-#     - mkdir -p public/stable/
-#     - (cd public/stable; helm package ../../stable/*)
-#     - helm repo index public/stable --url https://cncf.gitlab.io/stable
-#     - helm lint demo/*
-#     - for chart in demo/*; do helm dep up $chart; done
-#     - mkdir -p public/demo/
-#     - (cd public/demo; helm package ../../demo/*)
-#     - helm repo index public/demo --url https://cncf.gitlab.io/demo
-#     - find public
-#   artifacts:
-#     paths:
-#     - public
 
 .build_source: &build_source
   image: buildpack-deps:stretch
@@ -71,12 +47,16 @@ before_script:
       - ./data
 
 .cross-project: &cross-project
-  image: registry.cncf.ci/cncf/cross-cloud/provisioning:production
+  #image: registry.cncf.ci/cncf/cross-cloud/provisioning:production
+  image: crosscloudci/debian-helm-kubectl:v2.7.2-v1.7.12
   stage: Cross-Project
   # variables:
     # KUBECONFIG: MUST BE SET
     # CLOUD: MUST BE SET
   script:
+    #- helm init || true
+    #- pushd $(pwd)/charts ; make all ; popd
+    #- helm repo list
     - echo "$KUBECONFIG" | base64 -d | tee ./kubeconfig
     - export KUBECONFIG=./kubeconfig
     - kubectl get nodes
@@ -88,7 +68,45 @@ before_script:
     - helm ls --all "${DEPLOYMENT_NAME}" > /dev/null && helm delete --purge "${DEPLOYMENT_NAME}" || true
     - helm repo add cncf http://cncf.gitlab.io/stable
     - helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+    - helm repo add onap-amsterdam  http://cncf.gitlab.io/onap-amsterdam
+    - helm repo add onap-master  http://cncf.gitlab.io/onap-master 
+    - >
+      if [ "$TARGET_PROJECT_NAME" == so ]; then
+
+         # echo "Remove old deploys"
+         # helm delete --purge onap-config || true
+         # helm delete --purge onap-log || true
+         # helm delete --purge onap-robot || true
+         # sleep 10
+
+         echo "Create project namespaces"
+         kubectl create namespace onap || true
+         kubectl create namespace onap-log || true
+         kubectl create namespace onap-mso || true
+         kubectl create namespace onap-robot || true
+
+         echo "Adding onap secret to cluster"
+         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap || true
+         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-log || true
+         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-mso || true
+         kubectl create secret docker-registry onap-docker-registry-key --docker-server=nexus3.onap.org:10001 --docker-username="$ONAP_USERNAME" --docker-password="$ONAP_PASSWORD" --docker-email="$ONAP_EMAIL" --namespace=onap-robot || true
+         
+         echo "Add clusterrolebinding"
+         kubectl create clusterrolebinding onap-config-admin-binding --clusterrole=cluster-admin --serviceaccount=onap:default || true
+         kubectl create clusterrolebinding onap-log-admin-binding --clusterrole=cluster-admin --serviceaccount=onap-log:default || true
+         kubectl create clusterrolebinding onap-mso-admin-binding --clusterrole=cluster-admin --serviceaccount=onap-mso:default || true
+         kubectl create clusterrolebinding onap-robot-admin-binding --clusterrole=cluster-admin --serviceaccount=onap-robot:default || true
+         
+         echo "Create Config/Log/Robot"
+         helm upgrade --install --force onap-config --namespace=onap onap-amsterdam/config
+         helm upgrade --install --force onap-log --namespace=onap-log onap-amsterdam/log
+         helm upgrade --install --force onap-robot --namespace=onap-robot onap-amsterdam/robot
+         export NAMESPACE="onap-mso"
+      else
+        echo "skipping onap configuration"
+      fi
     - helm install -f defaults/"${TARGET_PROJECT_NAME}".yaml
+         --namespace "${NAMESPACE}"
          --name "${DEPLOYMENT_NAME}"
          $IMAGE_ARGS
          $TAG_ARGS
@@ -101,10 +119,19 @@ before_script:
       - ./data
 
 e2e:
-  image: crosscloudci/debian-go
+  image: crosscloudci/debian-helm-kubectl:v2.7.2-v1.7.12
   stage: End-to-End
   script:
-    - echo 'test'
+    - echo "$KUBECONFIG" | base64 -d | tee ./kubeconfig
+    - export KUBECONFIG=$(pwd)/kubeconfig
+    - >
+      if [ "$TARGET_PROJECT_NAME" == so ]; then
+         ls -al
+         ./cd.sh
+      else
+        echo "Enable in .gitlab-ci.yml"
+      fi
+
 
 Dashboard:
   image: crosscloudci/debian-go

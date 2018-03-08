@@ -1,0 +1,66 @@
+#{{ if not .Values.disableMsoMariadb }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+  namespace: "{{ .Values.nsPrefix }}-mso"
+  labels:
+    app: mariadb
+spec:
+  ports:
+    - port: 3306
+      nodePort: {{ .Values.nodePortPrefix }}52
+  selector:
+    app: mariadb
+  type: NodePort
+#{{ end }}
+#{{ if not .Values.disableMsoMso }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mso
+  namespace: "{{ .Values.nsPrefix }}-mso"
+  labels:
+    app: mso
+  annotations:
+    msb.onap.org/service-info: '[
+      {
+          "serviceName": "so",
+          "version": "v1",
+          "url": "/ecomp/mso/infra",
+          "protocol": "REST"
+          "port": "8080",
+          "visualRange":"1"
+      },
+      {
+          "serviceName": "so-deprecated",
+          "version": "v1",
+          "url": "/ecomp/mso/infra",
+          "protocol": "REST"
+          "port": "8080",
+          "visualRange":"1",
+          "path":"/ecomp/mso/infra"
+      }
+      ]'
+spec:
+  selector:
+    app: mso
+  ports:
+    - name: mso1
+      port: 8080
+      nodePort: {{ .Values.nodePortPrefix }}23
+    - name: mso2
+      port: 3904
+      nodePort: {{ .Values.nodePortPrefix }}25
+    - name: mso3
+      port: 3905
+      nodePort: {{ .Values.nodePortPrefix }}24
+    - name: mso4
+      port: 9990
+      nodePort: {{ .Values.nodePortPrefix }}22
+    - name: mso5
+      port: 8787
+      nodePort: {{ .Values.nodePortPrefix }}50
+  type: NodePort
+#{{ end }}
