@@ -129,7 +129,7 @@ e2e:
          ls -al
          ./cd.sh
       else
-        echo "skipping onap configuration"
+        echo "Enable in .gitlab-ci.yml"
       fi
 
 
