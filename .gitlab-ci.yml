@@ -86,7 +86,7 @@ before_script:
     - helm init
     - echo Removing any previous deploys of "${DEPLOYMENT_NAME}"
     - helm ls --all "${DEPLOYMENT_NAME}" > /dev/null && helm delete --purge "${DEPLOYMENT_NAME}" || true
-    - helm repo add cncf http://cncf.gitlab.io/stable
+    - helm repo add cncf https://cncf.gitlab.io/stable
     - helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
     - helm install -f defaults/"${TARGET_PROJECT_NAME}".yaml
          --name "${DEPLOYMENT_NAME}"
