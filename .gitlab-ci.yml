@@ -111,6 +111,8 @@ before_script:
          $IMAGE_ARGS
          $TAG_ARGS
          "${CHART_REPO}"/"${CHART}"
+         --wait
+         --timeout 3600
   artifacts:
     name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
     untracked: true
