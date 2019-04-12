@@ -47,8 +47,7 @@ before_script:
       - ./data
 
 .cross-project: &cross-project
-  #image: registry.cncf.ci/cncf/cross-cloud/provisioning:production
-  image: crosscloudci/debian-helm-kubectl:v2.7.2-v1.7.12
+  image: crosscloudci/debian-helm-kubectl:v2.13.1-v1.13.0
   stage: Cross-Project
   # variables:
     # KUBECONFIG: MUST BE SET
@@ -121,7 +120,7 @@ before_script:
       - ./data
 
 e2e:
-  image: crosscloudci/debian-helm-kubectl:v2.7.2-v1.7.12
+  image: crosscloudci/debian-helm-kubectl:v2.13.1-v1.13.0
   stage: End-to-End
   script:
     - echo "$KUBECONFIG" | base64 -d | tee ./kubeconfig
