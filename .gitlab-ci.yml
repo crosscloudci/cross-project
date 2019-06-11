@@ -33,6 +33,14 @@ before_script:
         exit 0 #Should Show Skipped on Gitlab CI FIXME
       elif [ "${DISABLE_SOURCE}" == "yes" ]; then
         exit 0 #Should Show Skipped on Gitlab CI FIXME
+      elif [ "${ARCH}" == "arm64" && "${TARGET_PROJECT_NAME}" == "envoy" ]; then
+        PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/$PROJECT_ID/pipelines/${SOURCE}/jobs?scope=success" | jq '.[] | select(.name=="container-arm") | .id') 
+        curl -s -o data/"$TARGET_PROJECT_NAME".env -L "${BASE_URL}/${ORG}/${TARGET_PROJECT_NAME}/-/jobs/${PROJECT_JOB}/artifacts/raw/release.env"
+        cat data/"$TARGET_PROJECT_NAME".env
+      elif [ "${ARCH}" == "arm64" && "${TARGET_PROJECT_NAME}" == "fluentd" ]; then
+        PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/$PROJECT_ID/pipelines/${SOURCE}/jobs?scope=success" | jq '.[] | select(.name=="container-arm") | .id') 
+        curl -s -o data/"$TARGET_PROJECT_NAME".env -L "${BASE_URL}/${ORG}/${TARGET_PROJECT_NAME}/-/jobs/${PROJECT_JOB}/artifacts/raw/release.env"
+        cat data/"$TARGET_PROJECT_NAME".env
       else
         PROJECT_JOB=$(curl --header "PRIVATE-TOKEN:${TOKEN}" "${BASE_URL}/api/v4/projects/$PROJECT_ID/pipelines/${SOURCE}/jobs?scope=success" | jq '.[] | select(.name=="container") | .id') 
         curl -s -o data/"$TARGET_PROJECT_NAME".env -L "${BASE_URL}/${ORG}/${TARGET_PROJECT_NAME}/-/jobs/${PROJECT_JOB}/artifacts/raw/release.env"
