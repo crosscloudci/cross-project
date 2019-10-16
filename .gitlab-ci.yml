@@ -55,7 +55,7 @@ before_script:
       - ./data
 
 .cross-project: &cross-project
-  image: crosscloudci/debian-helm-kubectl:v2.13.1-v1.13.0
+  image: crosscloudci/debian-helm-kubectl:v2.14.3-v1.16.2
   stage: Cross-Project
   # variables:
     # KUBECONFIG: MUST BE SET
@@ -70,7 +70,6 @@ before_script:
     - kubectl get componentstatuses
     - env | grep IMAGE
     - env | grep TAG
-    - helm init
     - echo Removing any previous deploys of "${DEPLOYMENT_NAME}"
     - helm ls --all "${DEPLOYMENT_NAME}" > /dev/null && helm delete --purge "${DEPLOYMENT_NAME}" || true
     - helm repo add cncf https://cncf.gitlab.io/stable
