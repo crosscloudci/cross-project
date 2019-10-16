@@ -55,7 +55,7 @@ before_script:
       - ./data
 
 .cross-project: &cross-project
-  image: crosscloudci/debian-helm-kubectl:v2.13.1-v1.13.0
+  image: crosscloudci/debian-helm-kubectl:v2.14.3-v1.16.2
   stage: Cross-Project
   # variables:
     # KUBECONFIG: MUST BE SET
