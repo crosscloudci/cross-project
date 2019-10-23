@@ -58,7 +58,7 @@ before_script:
   image: crosscloudci/debian-helm-kubectl:v2.14.3-v1.16.2
   stage: Cross-Project
   script:
-    - echo "$KUBECONFIG" | base64 -d | tee ./kubeconfig
+    - echo "$KUBECONFIG" | base64 -d | tee ./kubeconfig >/dev/null
     - export KUBECONFIG=./kubeconfig
     - kubectl get nodes
     - kubectl get componentstatuses
@@ -121,7 +121,7 @@ e2e:
   image: crosscloudci/debian-helm-kubectl:v2.13.1-v1.13.0
   stage: End-to-End
   script:
-    - echo "$KUBECONFIG" | base64 -d | tee ./kubeconfig
+    - echo "$KUBECONFIG" | base64 -d | tee ./kubeconfig >/dev/null
     - export KUBECONFIG=$(pwd)/kubeconfig
     - >
       if [ "$TARGET_PROJECT_NAME" == so ]; then
