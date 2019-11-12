@@ -102,7 +102,7 @@ before_script:
       else
         echo "skipping onap configuration"
       fi
-    - helm install -f defaults/"${TARGET_PROJECT_NAME}".yaml
+    - helm install
          --namespace "${NAMESPACE}"
          --name "${DEPLOYMENT_NAME}"
          $IMAGE_ARGS
