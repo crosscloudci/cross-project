@@ -102,9 +102,16 @@ before_script:
       else
         echo "skipping onap configuration"
       fi
-    - helm install -f defaults/"${TARGET_PROJECT_NAME}".yaml
+    - >
+      if [ "$TARGET_PROJECT_NAME" == prometheus ]; then
+         EXTRA_ARGS="--set alertmanager.persistentVolume.enabled=false --set server.persistentVolume.enabled=false --set pushgateway.persistentVolume.enabled=false --set nodeExporter.enabled=false" 
+      elif [ "$TARGET_PROJECT_NAME" == envoy ] && [ "$TARGET_PROJECT_COMMIT_REF_NAME" != master ]; then
+         EXTRA_ARGS="--set service.name=envoy-stable" 
+      fi
+    - helm install
          --namespace "${NAMESPACE}"
          --name "${DEPLOYMENT_NAME}"
+         $EXTRA_ARGS
          $IMAGE_ARGS
          $TAG_ARGS
          "${CHART_REPO}"/"${CHART}"
