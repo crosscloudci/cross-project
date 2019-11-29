@@ -108,8 +108,8 @@ before_script:
          if [ "$TARGET_PROJECT_COMMIT_REF_NAME" == master ]; then
             EXTRA_ARGS="$EXTRA_ARGS --set nodeExporter.service.hostPort=9101" 
          fi
-      elif [ "$TARGET_PROJECT_NAME" == envoy ]; then
-         EXTRA_ARGS="--set service.name=envoy-$TARGET_PROJECT_COMMIT_REF_NAME" 
+      elif [ "$TARGET_PROJECT_NAME" == envoy ] && [ "$TARGET_PROJECT_COMMIT_REF_NAME" != master ]; then
+         EXTRA_ARGS="--set service.name=envoy-stable" 
       fi
     - helm install
          --namespace "${NAMESPACE}"
