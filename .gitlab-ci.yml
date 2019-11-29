@@ -104,10 +104,7 @@ before_script:
       fi
     - >
       if [ "$TARGET_PROJECT_NAME" == prometheus ]; then
-         EXTRA_ARGS="--set alertmanager.persistentVolume.enabled=false --set server.persistentVolume.enabled=false --set pushgateway.persistentVolume.enabled=false" 
-         if [ "$TARGET_PROJECT_COMMIT_REF_NAME" == master ]; then
-            EXTRA_ARGS="$EXTRA_ARGS --set nodeExporter.service.hostPort=9101" 
-         fi
+         EXTRA_ARGS="--set alertmanager.persistentVolume.enabled=false --set server.persistentVolume.enabled=false --set pushgateway.persistentVolume.enabled=false --set nodeExporter.enabled=false" 
       elif [ "$TARGET_PROJECT_NAME" == envoy ] && [ "$TARGET_PROJECT_COMMIT_REF_NAME" != master ]; then
          EXTRA_ARGS="--set service.name=envoy-stable" 
       fi
