@@ -109,7 +109,7 @@ before_script:
       fi
     - helm install
          --namespace "${NAMESPACE}"
-         --name "${DEPLOYMENT_NAME}"
+         "${DEPLOYMENT_NAME}"
          $EXTRA_ARGS
          $IMAGE_ARGS
          $TAG_ARGS
