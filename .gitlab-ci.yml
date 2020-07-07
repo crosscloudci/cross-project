@@ -109,6 +109,8 @@ before_script:
       elif [ "$TARGET_PROJECT_NAME" == envoy ] && [ "$TARGET_PROJECT_COMMIT_REF_NAME" != master ]; then
          EXTRA_ARGS="--set service.name=envoy-stable" 
       fi
+    - echo $KUBECONFIG
+    - export KUBECONFIG=./kubeconfig
     - helm install
          --namespace "${NAMESPACE}"
          "${DEPLOYMENT_NAME}"
