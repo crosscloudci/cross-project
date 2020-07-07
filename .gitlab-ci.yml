@@ -59,7 +59,7 @@ before_script:
   stage: Cross-Project
   script:
     - echo "$KUBECONFIG" | base64 -d | tee ./kubeconfig >/dev/null
-    - export KUBECONFIG=./kubeconfig
+    - export KUBECONFIG=$(pwd)/kubeconfig
     - kubectl get nodes
     - kubectl get componentstatuses
     - env | grep IMAGE
@@ -110,7 +110,7 @@ before_script:
          EXTRA_ARGS="--set service.name=envoy-stable" 
       fi
     - echo $KUBECONFIG
-    - export KUBECONFIG=./kubeconfig
+    - export KUBECONFIG=$(pwd)/kubeconfig
     - helm install
          --namespace "${NAMESPACE}"
          "${DEPLOYMENT_NAME}"
