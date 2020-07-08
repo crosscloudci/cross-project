@@ -65,7 +65,7 @@ before_script:
     - env | grep IMAGE
     - env | grep TAG
     - echo Removing any previous deploys of "${DEPLOYMENT_NAME}"
-    - helm ls --all "${DEPLOYMENT_NAME}" > /dev/null && helm delete --purge "${DEPLOYMENT_NAME}" || true
+    - helm list "${DEPLOYMENT_NAME}" > /dev/null && helm delete --purge "${DEPLOYMENT_NAME}" || true
     - helm repo add stable https://kubernetes-charts.storage.googleapis.com/
     - helm repo update
     - >
@@ -109,8 +109,6 @@ before_script:
       elif [ "$TARGET_PROJECT_NAME" == envoy ] && [ "$TARGET_PROJECT_COMMIT_REF_NAME" != master ]; then
          EXTRA_ARGS="--set service.name=envoy-stable" 
       fi
-    - echo $KUBECONFIG
-    - export KUBECONFIG=$(pwd)/kubeconfig
     - helm install
          --namespace "${NAMESPACE}"
          "${DEPLOYMENT_NAME}"
